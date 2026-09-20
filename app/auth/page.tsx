@@ -28,7 +28,7 @@ export default function AuthPage() {
     try {
       if (isSignUp) {
         // Sign Up
-        const { error } = await supabase.auth.signUp({
+        const { data: authData, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -41,6 +41,29 @@ export default function AuthPage() {
         if (error) {
           setErrorMsg(error.message);
         } else {
+          // Immediately create initial profile record in Supabase profiles table
+          if (authData?.user) {
+            try {
+              await supabase.from('profiles').upsert({
+                id: authData.user.id,
+                full_name: fullName || 'Citizen',
+                state: 'Maharashtra',
+                age: 24,
+                gender: 'female',
+                category: 'General',
+                occupation: 'job_seeker',
+                education_level: 'undergraduate',
+                annual_income: 250000,
+                is_rural: false,
+                has_disability: false,
+                interests: [],
+                is_onboarded: false,
+              });
+            } catch (e) {
+              console.warn('Initial profile create error:', e);
+            }
+          }
+
           setSuccessMsg('Account created successfully! Redirecting to setup your citizen profile...');
           setTimeout(() => {
             router.push('/onboarding');

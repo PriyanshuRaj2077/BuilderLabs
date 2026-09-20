@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { Navbar } from '@/components/Navbar';
 import { 
   IndianState, 
@@ -129,7 +130,7 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     const finalProfile: UserProfile = {
       name,
       age,
@@ -145,6 +146,32 @@ export default function OnboardingPage() {
     };
 
     localStorage.setItem('soochai_profile', JSON.stringify(finalProfile));
+
+    // Persist to Supabase profiles table if authenticated
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          full_name: name || user.user_metadata?.full_name || 'Citizen',
+          state,
+          age: Number(age) || 24,
+          gender,
+          category,
+          occupation,
+          education_level: education,
+          annual_income: Number(annualIncome) || 0,
+          is_rural: Boolean(isRural),
+          has_disability: Boolean(hasDisability),
+          interests: interests || [],
+          is_onboarded: true,
+          updated_at: new Date().toISOString()
+        });
+      }
+    } catch (err) {
+      console.warn('Could not sync profile to Supabase:', err);
+    }
     
     // Celebration effect
     try {
