@@ -1,200 +1,57 @@
 'use client';
-
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
-import { Navbar } from '@/components/Navbar';
-import { Sparkles, Mail, Lock, ArrowRight, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { PageShell } from '@/components/layout/PageShell';
+import { useLang } from '@/lib/i18n/context';
 
 export default function AuthPage() {
+  const { t } = useLang();
   const router = useRouter();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [mode, setMode] = useState<'in' | 'up'>('in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  const [error, setError] = useState('');
+  const [ok, setOk] = useState('');
 
-  const handleAuth = async (e: React.FormEvent) => {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setErrorMsg('');
-    setSuccessMsg('');
-    setLoading(true);
-
+    setError(''); setOk(''); setLoading(true);
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: isSignUp ? 'signup' : 'signin',
-          email,
-          password,
-          fullName,
-        }),
+        body: JSON.stringify({ action: mode === 'up' ? 'signup' : 'signin', email, password, fullName: name }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        setErrorMsg(data.error || 'Authentication failed');
-      } else {
-        setSuccessMsg(data.message || 'Success!');
-        if (isSignUp) {
-          if (!data.needsEmailConfirm) {
-            setTimeout(() => {
-              router.push('/onboarding');
-            }, 1200);
-          }
-        } else {
-          setTimeout(() => {
-            router.push('/dashboard');
-          }, 800);
-        }
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Authentication service error';
-      setErrorMsg(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const j = await res.json();
+      if (!res.ok || j.error) { setError(j.error || t('common_error')); return; }
+      setOk(j.message || 'Done');
+      setTimeout(() => router.push(mode === 'up' ? '/onboarding' : '/dashboard'), 900);
+    } catch {
+      setError(t('common_error'));
+    } finally { setLoading(false); }
+  }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] flex flex-col font-sans transition-colors duration-200">
-      <Navbar />
-
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md fin-canvas p-8 shadow-xl">
-          
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-yellow-badge-bg)] border border-[var(--accent-yellow-badge-border)] text-[var(--accent-yellow)] mb-3">
-              <Sparkles className="h-6 w-6" />
-            </div>
-            <h1 className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">
-              {isSignUp ? 'Create Citizen Account' : 'Welcome to SuchakAI'}
-            </h1>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">
-              {isSignUp
-                ? 'Sign up to receive personalized government scheme discovery and tracking'
-                : 'Sign in to access your personalized scheme dashboard and saved benefits'}
-            </p>
-          </div>
-
-          {/* Feedback messages */}
-          {errorMsg && (
-            <div className="mb-5 rounded-2xl bg-red-500/10 p-3.5 border border-red-500/30 flex items-start gap-2 text-xs text-red-600 dark:text-red-300">
-              <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
-              <span>{errorMsg}</span>
-            </div>
-          )}
-
-          {successMsg && (
-            <div className="mb-5 rounded-2xl parrot-badge p-3.5 flex items-start gap-2 text-xs">
-              <ShieldCheck className="h-4 w-4 text-[#22e55e] shrink-0 mt-0.5" />
-              <span>{successMsg}</span>
-            </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleAuth} className="space-y-4">
-            {isSignUp && (
-              <div>
-                <label className="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Full Name</label>
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Ramesh Kumar"
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
-                />
-              </div>
-            )}
-
-            <div>
-              <label className="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="citizen@example.com"
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  minLength={6}
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-2 rounded-full bg-[var(--accent-yellow)] py-3 text-xs font-bold text-zinc-950 hover:brightness-105 shadow-lg shadow-yellow-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Processing...</span>
-                </>
-              ) : (
-                <>
-                  <span>{isSignUp ? 'Create Citizen Account' : 'Sign In to SuchakAI'}</span>
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Toggle between Sign In & Sign Up */}
-          <div className="mt-6 pt-6 border-t border-[var(--border-subtle)] text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setErrorMsg('');
-                setSuccessMsg('');
-              }}
-              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              {isSignUp ? (
-                <>Already have an account? <strong className="text-[var(--accent-yellow-text)] font-semibold">Sign In</strong></>
-              ) : (
-                <>New citizen? <strong className="text-[var(--accent-yellow-text)] font-semibold">Create an account</strong></>
-              )}
-            </button>
-          </div>
-
-          {/* Guest Mode Direct Access */}
-          <div className="mt-4 text-center">
-            <Link
-              href="/onboarding"
-              className="text-[11px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] underline"
-            >
-              Continue as Guest (No login required)
-            </Link>
-          </div>
-
-        </div>
-      </main>
-    </div>
+    <PageShell>
+      <div className="page-shell flex max-w-md flex-1 flex-col justify-center py-12">
+        <h1 className="font-display text-3xl font-bold">{mode === 'in' ? t('auth_signin_t') : t('auth_signup_t')}</h1>
+        <p className="mt-2 text-sm text-[var(--ink-2)]">{mode === 'in' ? t('auth_signin_d') : t('auth_signup_d')}</p>
+        <form onSubmit={submit} className="card mt-6 space-y-4 p-6">
+          {error && <p role="alert" className="rounded-md bg-[var(--red-soft)] px-3 py-2 text-sm text-[var(--red)]">{error}</p>}
+          {ok && <p role="status" className="rounded-md bg-[var(--ok-soft)] px-3 py-2 text-sm text-[var(--ok)]">{ok}</p>}
+          {mode === 'up' && <div><label className="label" htmlFor="nm">{t('auth_name')}</label><input id="nm" className="field" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /></div>}
+          <div><label className="label" htmlFor="em">{t('auth_email')}</label><input id="em" className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="you@example.com" /></div>
+          <div><label className="label" htmlFor="pw">{t('auth_pass')}</label><input id="pw" className="field" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete={mode === 'up' ? 'new-password' : 'current-password'} /></div>
+          <button className="btn btn-primary w-full" disabled={loading}>{loading ? t('common_loading') : mode === 'in' ? t('auth_signin_btn') : t('auth_signup_btn')}</button>
+        </form>
+        <button className="mt-3 text-sm text-[var(--ink-2)] hover:underline" onClick={() => { setMode(mode === 'in' ? 'up' : 'in'); setError(''); setOk(''); }}>
+          {mode === 'in' ? t('auth_new') : t('auth_have')}
+        </button>
+        <Link href="/onboarding" className="mt-2 text-center text-sm text-[var(--ink-3)] hover:underline">{t('auth_guest')}</Link>
+      </div>
+    </PageShell>
   );
 }
-
