@@ -79,7 +79,7 @@ export default function AuthPage() {
           
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ff451a]/15 text-[#ff451a] mb-3">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-yellow-badge-bg)] border border-[var(--accent-yellow-badge-border)] text-[var(--accent-yellow)] mb-3">
               <Sparkles className="h-6 w-6" />
             </div>
             <h1 className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">
@@ -118,7 +118,7 @@ export default function AuthPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Ramesh Kumar"
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#ff451a]"
+                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
                 />
               </div>
             )}
@@ -133,7 +133,7 @@ export default function AuthPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="citizen@example.com"
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#ff451a]"
+                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
                 />
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function AuthPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   minLength={6}
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#ff451a]"
+                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
                 />
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 rounded-full bg-[#ff451a] py-3 text-xs font-bold text-white hover:brightness-110 shadow-lg shadow-[#ff451a]/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full mt-2 rounded-full bg-[var(--accent-yellow)] py-3 text-xs font-bold text-zinc-950 hover:brightness-105 shadow-lg shadow-yellow-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -185,9 +185,9 @@ export default function AuthPage() {
               className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               {isSignUp ? (
-                <>Already have an account? <strong className="text-[#ff451a] font-semibold">Sign In</strong></>
+                <>Already have an account? <strong className="text-[var(--accent-yellow-text)] font-semibold">Sign In</strong></>
               ) : (
-                <>New citizen? <strong className="text-[#ff451a] font-semibold">Create an account</strong></>
+                <>New citizen? <strong className="text-[var(--accent-yellow-text)] font-semibold">Create an account</strong></>
               )}
             </button>
           </div>
