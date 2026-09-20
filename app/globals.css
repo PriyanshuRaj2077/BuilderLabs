@@ -1,50 +1,89 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0f19;
-  --foreground: #f1f5f9;
-  --card: #111827;
-  --card-border: #1e293b;
+  --background: #0d0e11;
+  --panel-bg: #121418;
+  --card-bg: #181a20;
+  --card-subtle: #20232a;
+  --border-subtle: #262933;
+  --border-highlight: #343845;
+  
+  --accent-orange: #ff451a;
+  --accent-orange-glow: rgba(255, 69, 26, 0.25);
   --accent-emerald: #10b981;
+  --accent-yellow: #facc15;
   --accent-blue: #3b82f6;
-  --accent-amber: #f59e0b;
+
+  --text-primary: #ffffff;
+  --text-secondary: #949ba8;
+  --text-muted: #5e6473;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--background);
+  color: var(--text-primary);
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* Custom subtle scrollbars */
+/* FinPoint ultra-smooth canvas styling */
+.fin-canvas {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2rem; /* 32px curvature */
+}
+
+.fin-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.5rem; /* 24px curvature */
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fin-card:hover {
+  border-color: var(--border-highlight);
+  background: #1c1e25;
+}
+
+.fin-card-orange {
+  background: linear-gradient(135deg, #ff451a 0%, #eb3b12 100%);
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 36px -8px var(--accent-orange-glow);
+}
+
+.fin-pill {
+  border-radius: 9999px;
+  background: #1c1e24;
+  border: 1px solid var(--border-subtle);
+  transition: all 0.15s ease;
+}
+
+.fin-pill:hover {
+  background: #252832;
+  color: #ffffff;
+}
+
+.fin-pill-active {
+  background: #ffffff !important;
+  color: #0b0c10 !important;
+  font-weight: 700;
+  border-color: #ffffff;
+}
+
+/* Custom minimal scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #0d0e11;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #262933;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* Glassmorphic card styling */
-.glass-panel {
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-panel-glow {
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.1);
+  background: #3c4150;
 }

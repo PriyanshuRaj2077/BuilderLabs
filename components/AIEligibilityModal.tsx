@@ -9,11 +9,10 @@ import {
   CheckCircle2, 
   AlertCircle, 
   ArrowRight, 
-  FileText, 
   ExternalLink,
   ShieldCheck,
-  Building,
-  Loader2
+  Loader2,
+  ArrowUpRight
 } from 'lucide-react';
 
 interface AIEligibilityModalProps {
@@ -57,45 +56,45 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
   }, [scheme.id, profile]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border border-[#23262f] bg-[#121418] p-6 sm:p-8 shadow-2xl">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+          className="absolute top-5 right-5 rounded-full p-2 bg-[#181a20] border border-[#262933] text-neutral-400 hover:text-white transition-colors"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-wider text-blue-400">
+        <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-[#ff451a]">
           <Sparkles className="h-4 w-4" />
-          <span>Gemini AI Eligibility Reasoning</span>
+          <span>Gemini AI Policy Reasoning</span>
         </div>
 
-        <h2 className="text-xl font-bold text-white tracking-tight pr-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight pr-8">
           {scheme.name}
         </h2>
-        <p className="text-xs text-slate-400 mt-0.5">{scheme.ministry}</p>
+        <p className="text-xs text-neutral-400 mt-0.5">{scheme.ministry}</p>
 
-        {/* Profile Snapshot */}
+        {/* Profile Snapshot Strip */}
         {profile && (
-          <div className="mt-4 rounded-xl bg-slate-950/80 p-3.5 border border-slate-800 text-xs text-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="mt-4 rounded-[20px] bg-[#181a20] p-3.5 border border-[#262933] text-xs text-neutral-300 grid grid-cols-2 sm:grid-cols-4 gap-2">
             <div>
-              <span className="text-slate-400 block">Candidate:</span>
+              <span className="text-neutral-500 block text-[11px]">Candidate:</span>
               <span className="font-semibold text-white">{profile.name}</span>
             </div>
             <div>
-              <span className="text-slate-400 block">State & Age:</span>
+              <span className="text-neutral-500 block text-[11px]">State & Age:</span>
               <span className="font-semibold text-white">{profile.state} ({profile.age}y)</span>
             </div>
             <div>
-              <span className="text-slate-400 block">Category:</span>
+              <span className="text-neutral-500 block text-[11px]">Category:</span>
               <span className="font-semibold text-white">{profile.category}</span>
             </div>
             <div>
-              <span className="text-slate-400 block">Occupation:</span>
+              <span className="text-neutral-500 block text-[11px]">Occupation:</span>
               <span className="font-semibold text-white capitalize">{profile.occupation.replace('_', ' ')}</span>
             </div>
           </div>
@@ -104,22 +103,25 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
         {/* Body Content */}
         {loading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
-            <p className="text-sm text-slate-400">Gemini is analyzing official scheme rules for your profile...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-[#ff451a]" />
+            <p className="text-sm text-neutral-400">Gemini is translating official legal gazette rules for you...</p>
           </div>
         ) : (
           <div className="mt-5 space-y-4 text-sm">
             
-            {/* AI Summary Statement */}
-            <div className="rounded-xl bg-gradient-to-r from-blue-950/40 to-indigo-950/40 border border-blue-800/40 p-4">
-              <p className="font-medium text-slate-200 leading-relaxed">
+            {/* AI Summary Statement (FinPoint Orange/Dark accent box) */}
+            <div className="rounded-[20px] bg-[#181a20] border border-[#262933] p-4">
+              <span className="text-[11px] font-bold text-[#ff451a] uppercase tracking-wider block mb-1">
+                Executive Eligibility Summary
+              </span>
+              <p className="font-medium text-white leading-relaxed text-xs sm:text-sm">
                 {aiData?.summary || matchResult.whyItMatches}
               </p>
             </div>
 
             {/* Matched Criteria Checkpoints */}
-            <div>
-              <h4 className="font-semibold text-slate-200 text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <div className="p-4 rounded-[20px] bg-[#181a20] border border-[#262933]">
+              <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                 <span>Eligibility Factors Verified</span>
               </h4>
@@ -129,8 +131,8 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
                   `Caste/Category criteria aligns (${profile?.category || 'General'})`,
                   `Target occupation status satisfied (${profile?.occupation || 'Citizen'})`
                 ]).map((point, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+                  <li key={idx} className="flex items-start gap-2 text-xs text-neutral-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
                     <span>{point}</span>
                   </li>
                 ))}
@@ -139,15 +141,15 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
 
             {/* Watchouts & Caveats */}
             {aiData?.watchouts && aiData.watchouts.length > 0 && (
-              <div className="rounded-xl bg-amber-950/30 border border-amber-900/50 p-3.5">
-                <h4 className="font-semibold text-amber-300 text-xs uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <div className="rounded-[20px] bg-[#181a20] border border-amber-500/30 p-4">
+                <h4 className="font-bold text-amber-400 text-xs uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                   <AlertCircle className="h-4 w-4 text-amber-400" />
-                  <span>Important Verification Checkpoints</span>
+                  <span>Prerequisites & Watchouts</span>
                 </h4>
-                <ul className="space-y-1.5 text-xs text-amber-200/80">
+                <ul className="space-y-1.5 text-xs text-neutral-300">
                   {aiData.watchouts.map((w, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <span>•</span>
+                      <span className="text-amber-400">•</span>
                       <span>{w}</span>
                     </li>
                   ))}
@@ -156,18 +158,18 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
             )}
 
             {/* Next Steps to Apply */}
-            <div>
-              <h4 className="font-semibold text-slate-200 text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <ArrowRight className="h-4 w-4 text-blue-400" />
-                <span>Recommended Next Steps</span>
+            <div className="p-4 rounded-[20px] bg-[#181a20] border border-[#262933]">
+              <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                <ArrowRight className="h-4 w-4 text-[#ff451a]" />
+                <span>Application Pathway</span>
               </h4>
               <div className="space-y-2 text-xs">
                 {(aiData?.nextSteps || [
                   'Keep your Aadhaar-linked active bank account ready for Direct Benefit Transfer.',
                   'Submit the online registration form through the official government portal.'
                 ]).map((step, idx) => (
-                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-slate-950 p-2.5 border border-slate-800 text-slate-300">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600/30 text-blue-400 text-[10px] font-bold shrink-0">
+                  <div key={idx} className="flex items-center gap-2.5 rounded-xl bg-[#121418] p-2.5 border border-[#23262f] text-neutral-200">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#ff451a]/20 text-[#ff451a] text-[10px] font-bold shrink-0">
                       {idx + 1}
                     </span>
                     <span>{step}</span>
@@ -180,16 +182,16 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
         )}
 
         {/* Modal Footer */}
-        <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+        <div className="mt-6 pt-4 border-t border-[#23262f] flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
             <ShieldCheck className="h-4 w-4 text-emerald-400" />
-            <span>Official Source Grounding Verified</span>
+            <span>Verified Official Gazette Grounding</span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="rounded-lg bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700"
+              className="rounded-full bg-[#181a20] border border-[#262933] px-4 py-2 text-xs font-semibold text-neutral-300 hover:text-white"
             >
               Close
             </button>
@@ -197,10 +199,10 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
               href={scheme.officialUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-500"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-black hover:bg-neutral-200"
             >
               <span>Go to Official Portal</span>
-              <ExternalLink className="h-3.5 w-3.5" />
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
           </div>
         </div>

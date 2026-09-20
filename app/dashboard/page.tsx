@@ -4,50 +4,49 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { SchemeCard } from '@/components/SchemeCard';
-import { FilterSidebar } from '@/components/FilterSidebar';
-import { UserProfile, SchemeMatchResult, SchemeCategory } from '@/lib/types';
+import { UserProfile, SchemeCategory } from '@/lib/types';
 import { SEED_SCHEMES } from '@/lib/data/seed-schemes';
 import { rankSchemesForProfile } from '@/lib/matching';
 import { 
   Sparkles, 
   Search, 
+  ArrowUpRight, 
   SlidersHorizontal, 
-  UserCheck, 
-  MapPin, 
-  Briefcase, 
-  GraduationCap, 
-  IndianRupee,
-  Layers,
-  ArrowRight,
-  RotateCcw
+  RefreshCw,
+  TrendingUp,
+  ShieldCheck,
+  CheckCircle2,
+  Building2,
+  ChevronRight,
+  ExternalLink,
+  Award,
+  Zap,
+  Globe
 } from 'lucide-react';
 
 const DEFAULT_CITIZEN_PROFILE: UserProfile = {
   name: 'Citizen',
-  age: 25,
+  age: 23,
   gender: 'all',
-  state: 'All India',
-  category: 'General',
-  occupation: 'job_seeker',
+  state: 'Maharashtra',
+  category: 'OBC',
+  occupation: 'student',
   education: 'undergraduate',
-  annualIncome: 250000,
+  annualIncome: 200000,
   isRural: false,
   hasDisability: false,
   interests: ['Higher Education Scholarships', 'Skill Training & Employment']
 };
 
 export default function DashboardPage() {
-  // Current user profile state
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_CITIZEN_PROFILE);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedLevel, setSelectedLevel] = useState<string>('all');
-  const [onlyEligible, setOnlyEligible] = useState(false);
-  const [activeTab, setActiveTab] = useState<'matched' | 'all' | 'saved'>('matched');
+  const [selectedTier, setSelectedTier] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'central' | 'state'>('all');
   const [savedSchemeIds, setSavedSchemeIds] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
 
-  // Load profile from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('soochai_profile');
     if (stored) {
@@ -71,264 +70,427 @@ export default function DashboardPage() {
     localStorage.setItem('soochai_saved', JSON.stringify(updated));
   };
 
-  // Run deterministic matching and ranking for current profile
+  // Deterministic matching
   const rankedResults = useMemo(() => {
     return rankSchemesForProfile(SEED_SCHEMES, profile);
   }, [profile]);
 
-  // Extract all categories
-  const allCategories = useMemo(() => {
+  const eligibleSchemes = useMemo(() => {
+    return rankedResults.filter(r => r.isEligible);
+  }, [rankedResults]);
+
+  // Highlight opportunity (Highest match score)
+  const topScheme = eligibleSchemes[0] || rankedResults[0];
+
+  // Quick category categories
+  const categories = useMemo(() => {
     return Array.from(new Set(SEED_SCHEMES.map(s => s.categoryTag))) as SchemeCategory[];
   }, []);
 
-  // Filtered results
-  const filteredResults = useMemo(() => {
+  // Filtered schemes
+  const filteredSchemes = useMemo(() => {
     return rankedResults.filter(item => {
-      const scheme = item.scheme;
-
-      // Search query
+      const s = item.scheme;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchesQuery = 
-          scheme.name.toLowerCase().includes(q) ||
-          scheme.description.toLowerCase().includes(q) ||
-          scheme.ministry.toLowerCase().includes(q) ||
-          scheme.whoIsItFor.toLowerCase().includes(q) ||
-          (scheme.nameHindi && scheme.nameHindi.toLowerCase().includes(q));
-        if (!matchesQuery) return false;
+        const match = s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q) || s.ministry.toLowerCase().includes(q);
+        if (!match) return false;
       }
-
-      // Tab filter
-      if (activeTab === 'saved') {
-        if (!savedSchemeIds.includes(scheme.id)) return false;
-      } else if (activeTab === 'matched') {
-        if (!item.isEligible && item.matchScore < 50) return false;
-      }
-
-      // Only eligible toggle
-      if (onlyEligible && !item.isEligible) {
-        return false;
-      }
-
-      // Level filter
-      if (selectedLevel !== 'all' && scheme.level !== selectedLevel) {
-        return false;
-      }
-
-      // Category filter
-      if (selectedCategory !== 'all' && scheme.categoryTag !== selectedCategory) {
-        return false;
-      }
-
+      if (activeTab === 'central' && s.level !== 'central') return false;
+      if (activeTab === 'state' && s.level !== 'state') return false;
+      if (selectedCategory !== 'all' && s.categoryTag !== selectedCategory) return false;
       return true;
     });
-  }, [rankedResults, searchQuery, activeTab, onlyEligible, selectedLevel, selectedCategory, savedSchemeIds]);
-
-  const eligibleCount = rankedResults.filter(r => r.isEligible).length;
+  }, [rankedResults, searchQuery, activeTab, selectedCategory]);
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#0d0e11] text-white flex flex-col font-sans selection:bg-[#ff451a] selection:text-white">
       <Navbar currentProfile={profile} />
 
-      <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1">
+      {/* Main FinPoint Canvas Wrapper */}
+      <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex-1 space-y-6">
         
-        {/* Citizen Profile Status Hero Bar */}
-        <section className="rounded-2xl glass-panel-glow p-5 sm:p-6 mb-8 border border-blue-900/40">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            
+        {/* TOP SECTION: Bento Grid Hero (FinPoint "Portfolio Assets Performance" layout) */}
+        <section className="fin-canvas p-6 sm:p-8 bg-[#121418] border border-[#23262f]">
+          
+          {/* Section Header */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Live Citizen Match Active</span>
-              </div>
-              
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                Welcome, {profile.name}!
-              </h1>
-              <p className="text-sm text-slate-300 mt-1">
-                <strong className="text-emerald-400 font-bold">{eligibleCount} schemes</strong> strictly matched to your personal profile. No manual searching required.
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                <span>Citizen Opportunity Radar</span>
+              </h2>
+              <p className="text-xs text-neutral-400 mt-0.5">
+                Live deterministic ranking matched against your demographic parameters
               </p>
-
-              {/* Profile Chips */}
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                <span className="inline-flex items-center gap-1 rounded-lg bg-slate-900 px-2.5 py-1 text-slate-300 border border-slate-800">
-                  <MapPin className="h-3 w-3 text-blue-400" />
-                  {profile.state}
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-lg bg-slate-900 px-2.5 py-1 text-slate-300 border border-slate-800">
-                  <UserCheck className="h-3 w-3 text-indigo-400" />
-                  {profile.age} years • {profile.gender}
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-lg bg-slate-900 px-2.5 py-1 text-slate-300 border border-slate-800">
-                  <Briefcase className="h-3 w-3 text-amber-400" />
-                  {profile.category} • {profile.occupation.replace('_', ' ')}
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-lg bg-slate-900 px-2.5 py-1 text-slate-300 border border-slate-800">
-                  <IndianRupee className="h-3 w-3 text-emerald-400" />
-                  ₹{(profile.annualIncome / 100000).toFixed(1)}L / yr
-                </span>
-              </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="flex items-center gap-3 shrink-0">
+            {/* Health Score / Readiness Indicator + Action Pills */}
+            <div className="flex items-center gap-3">
+              {/* FinPoint health bars */}
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#181a20] border border-[#262933] text-xs">
+                <div className="flex items-center gap-0.5">
+                  <div className="w-1 h-3.5 rounded-full bg-emerald-400" />
+                  <div className="w-1 h-3.5 rounded-full bg-emerald-400" />
+                  <div className="w-1 h-3.5 rounded-full bg-emerald-400" />
+                  <div className="w-1 h-3.5 rounded-full bg-emerald-400" />
+                  <div className="w-1 h-3.5 rounded-full bg-neutral-600" />
+                </div>
+                <span className="font-bold text-white">92</span>
+                <span className="text-[11px] text-neutral-400">Match Index</span>
+              </div>
+
+              {/* Filter / Refresh Pills */}
               <Link
                 href="/onboarding"
-                className="rounded-xl bg-slate-800 px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white transition-all"
+                className="px-3.5 py-1.5 rounded-full bg-[#181a20] border border-[#262933] text-xs font-semibold text-neutral-300 hover:text-white hover:border-[#343845] transition-colors flex items-center gap-1.5"
               >
-                Edit Preferences
+                <span>Filters</span>
+                <SlidersHorizontal className="h-3 w-3" />
               </Link>
               <Link
                 href="/search"
-                className="rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#181a20] border border-[#262933] text-neutral-300 hover:text-white transition-colors"
+                title="Full Catalog"
               >
-                <span>Full Directory</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Hero Bento Layout: Left Stats & Mini Cards + Right Vibrant FinPoint Orange Hero Card */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            {/* Left 5 Cols: Stats & Mini Bento Tiles */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
+              <div>
+                <span className="text-xs font-medium text-neutral-400">Total Matched Opportunities</span>
+                <div className="flex items-baseline gap-3 mt-1">
+                  <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    {eligibleSchemes.length} Schemes
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
+                    <TrendingUp className="h-3 w-3" />
+                    <span>+100% Eligible</span>
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-400 mt-1">
+                  Based on: <strong className="text-neutral-200">{profile.state}</strong> • <strong className="text-neutral-200">{profile.occupation.replace('_', ' ')}</strong> • <strong className="text-neutral-200">{profile.category}</strong>
+                </p>
+              </div>
+
+              {/* 4 Mini Dark Tiles (FinPoint Stocks, Bonds, ETFs, REITs layout) */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="p-3.5 rounded-2xl bg-[#181a20] border border-[#262933]">
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Higher Education</span>
+                  </div>
+                  <div className="text-lg font-bold text-white">
+                    {rankedResults.filter(r => r.scheme.categoryTag === 'Education & Learning' && r.isEligible).length} Available
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#181a20] border border-[#262933]">
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff451a]" />
+                    <span>Business & Loans</span>
+                  </div>
+                  <div className="text-lg font-bold text-white">
+                    {rankedResults.filter(r => r.scheme.categoryTag === 'Business & Entrepreneurship' && r.isEligible).length} Available
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#181a20] border border-[#262933]">
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                    <span>Agriculture / Rural</span>
+                  </div>
+                  <div className="text-lg font-bold text-white">
+                    {rankedResults.filter(r => r.scheme.categoryTag === 'Agriculture & Rural' && r.isEligible).length} Available
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#181a20] border border-[#262933]">
+                  <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                    <span>Social Welfare</span>
+                  </div>
+                  <div className="text-lg font-bold text-white">
+                    {rankedResults.filter(r => r.scheme.categoryTag === 'Social Welfare & Empowerment' && r.isEligible).length} Available
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right 7 Cols: The FinPoint Vibrant High-Contrast Orange Hero Card */}
+            {topScheme && (
+              <div className="lg:col-span-7 fin-card-orange p-6 sm:p-7 text-white flex flex-col justify-between relative overflow-hidden">
+                
+                {/* Background geometric graph curve watermark */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none flex items-end">
+                  <svg viewBox="0 0 500 150" className="w-full h-auto stroke-white fill-none stroke-[3]">
+                    <path d="M0,130 Q100,10 200,90 T350,30 T500,80 L500,150 L0,150 Z" />
+                  </svg>
+                </div>
+
+                <div className="relative z-10">
+                  {/* Top Bar on Orange Card */}
+                  <div className="flex items-center justify-between gap-2 text-xs mb-3">
+                    <span className="font-semibold uppercase tracking-wider text-white/90">
+                      Top Ranked Opportunity (Priority #1)
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-black/25 font-bold text-white backdrop-blur-sm">
+                      {topScheme.matchScore}% Match Score
+                    </span>
+                  </div>
+
+                  {/* Big Number / Benefit */}
+                  <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-1">
+                    {topScheme.scheme.name}
+                  </div>
+                  <p className="text-xs text-white/80 line-clamp-2 mt-1">
+                    {topScheme.scheme.description}
+                  </p>
+                </div>
+
+                {/* Floating Black Insight Pill (Matches the FinPoint May 1 graph tooltip) */}
+                <div className="relative z-10 my-4 rounded-2xl bg-black/65 backdrop-blur-md p-3.5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[11px] text-white/60 block font-medium">Why It Matched You:</span>
+                    <p className="text-xs font-semibold text-white mt-0.5">{topScheme.whyItMatches}</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <span className="text-[10px] text-white/60 block">Benefit Value:</span>
+                    <span className="text-xs font-bold text-emerald-300">
+                      {topScheme.scheme.benefitAmount || topScheme.scheme.benefits[0]}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Orange Card Bottom Actions */}
+                <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <div className="flex items-center gap-1.5 text-xs text-white/90">
+                    <ShieldCheck className="h-4 w-4" />
+                    <span>Verified: {topScheme.scheme.lastVerifiedDate}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/scheme/${topScheme.scheme.id}`}
+                      className="px-4 py-2 rounded-full bg-black text-white text-xs font-bold hover:bg-neutral-900 transition-colors"
+                    >
+                      Full Details
+                    </Link>
+                    <a
+                      href={topScheme.scheme.officialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-full bg-white text-black text-xs font-bold hover:bg-neutral-100 transition-colors flex items-center gap-1"
+                    >
+                      <span>Apply Official</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+          </div>
+
+        </section>
+
+        {/* MIDDLE SECTION: FinPoint Watchlist Strip (Quick Horizontal Program Pills) */}
+        <section className="fin-canvas p-4 bg-[#121418] border border-[#23262f] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">
+            <span>Fast Explore:</span>
+          </div>
+
+          <div className="flex-1 flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
+            {[
+              { label: 'Post-Matric SC', tag: '100% Tuition', color: '#3b82f6', id: 'post-matric-sc-02' },
+              { label: 'PM-KISAN', tag: '₹6,000/yr', color: '#10b981', id: 'pm-kisan-01' },
+              { label: 'PMMY Mudra', tag: '₹20L Loan', color: '#ff451a', id: 'pm-mudra-yojana-03' },
+              { label: 'Ayushman Bharat', tag: '₹5L Health', color: '#facc15', id: 'ayushman-bharat-pmjay-05' },
+              { label: 'Atal Pension', tag: '₹5,000/mo', color: '#a855f7', id: 'atal-pension-yojana-13' }
+            ].map(item => (
+              <Link
+                key={item.id}
+                href={`/scheme/${item.id}`}
+                className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#181a20] border border-[#262933] hover:border-[#343845] transition-colors shrink-0 text-xs"
+              >
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="font-semibold text-white">{item.label}</span>
+                <span className="text-[11px] text-neutral-400 font-mono">{item.tag}</span>
+              </Link>
+            ))}
+          </div>
+
+          <Link
+            href="/search"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#181a20] border border-[#262933] text-neutral-400 hover:text-white shrink-0"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </section>
+
+        {/* BOTTOM SECTION: 3-Column Bento Cards (FinPoint Allocation + Risk Score + Industry Insights) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          {/* 1. Allocation Performance: Category Distribution Bars (FinPoint 85% Stocks, 45% Bonds layout) */}
+          <div className="lg:col-span-5 fin-canvas p-6 bg-[#121418] border border-[#23262f] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-white tracking-tight">Scheme Category Weight</h3>
+                <span className="text-xs text-neutral-400">25 Total Programs</span>
+              </div>
+
+              {/* Vertical Bar Chart Representation */}
+              <div className="grid grid-cols-4 gap-3 items-end h-36 pt-4 pb-2 border-b border-[#23262f]">
+                <div className="flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span className="text-[10px] font-bold text-white">40%</span>
+                  <div className="w-full bg-[#ff451a] rounded-xl h-[45%]" />
+                  <span className="text-[10px] text-neutral-400">Edu</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span className="text-[10px] font-bold text-white">85%</span>
+                  <div className="w-full bg-amber-400 rounded-xl h-[85%]" />
+                  <span className="text-[10px] text-neutral-400">Agri</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span className="text-[10px] font-bold text-white">55%</span>
+                  <div className="w-full bg-white rounded-xl h-[55%]" />
+                  <span className="text-[10px] text-neutral-400">MSME</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span className="text-[10px] font-bold text-white">30%</span>
+                  <div className="w-full bg-[#262933] rounded-xl h-[30%]" />
+                  <span className="text-[10px] text-neutral-400">Health</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 text-xs text-neutral-400 flex items-center justify-between">
+              <span>Dynamic eligibility weighting</span>
+              <span className="font-semibold text-emerald-400">Active</span>
+            </div>
+          </div>
+
+          {/* 2. Risk / Eligibility Gauge (FinPoint 72/100 Risk Meter layout) */}
+          <div className="lg:col-span-3 fin-canvas p-6 bg-[#121418] border border-[#23262f] flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-neutral-400">Citizen Eligibility</span>
+              <Link href="/onboarding" className="text-neutral-400 hover:text-white">
+                <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-          </div>
-        </section>
-
-        {/* Dashboard Tabs & Search Bar */}
-        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800 self-start">
-            <button
-              onClick={() => setActiveTab('matched')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                activeTab === 'matched'
-                  ? 'bg-blue-600 text-white shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Personalized ({eligibleCount})</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'all'
-                  ? 'bg-slate-800 text-white'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              All Programs ({SEED_SCHEMES.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('saved')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'saved'
-                  ? 'bg-slate-800 text-white'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Bookmarked ({savedSchemeIds.length})
-            </button>
-          </div>
-
-          {/* Quick Search */}
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search keyword (e.g. loan, scholarship)..."
-              className="w-full rounded-xl bg-slate-950 border border-slate-800 pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-        </div>
-
-        {/* Content Area: Sidebar Filters + Schemes Grid */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          
-          {/* Left Sidebar Filters */}
-          <FilterSidebar
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            selectedLevel={selectedLevel}
-            onSelectLevel={setSelectedLevel}
-            onlyEligible={onlyEligible}
-            onToggleOnlyEligible={setOnlyEligible}
-            onResetFilters={() => {
-              setSelectedCategory('all');
-              setSelectedLevel('all');
-              setOnlyEligible(false);
-              setSearchQuery('');
-            }}
-            categories={allCategories}
-          />
-
-          {/* Main Schemes List */}
-          <div className="flex-1 w-full space-y-4">
-            {filteredResults.length === 0 ? (
-              <div className="rounded-2xl glass-panel p-12 text-center border border-slate-800">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-800 text-slate-400 mb-3">
-                  <Search className="h-6 w-6" />
-                </div>
-                <h3 className="text-base font-bold text-white">No matching schemes found</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                  Try adjusting your search criteria or resetting filters to see all available national schemes.
-                </p>
-                <button
-                  onClick={() => {
-                    setSelectedCategory('all');
-                    setSelectedLevel('all');
-                    setOnlyEligible(false);
-                    setSearchQuery('');
-                  }}
-                  className="mt-4 rounded-xl bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700"
-                >
-                  Reset Filters
-                </button>
+            <div className="my-auto py-3 text-center">
+              <div className="text-4xl font-extrabold text-white tracking-tight">
+                {eligibleSchemes.length} <span className="text-neutral-500 text-2xl font-normal">/ 25</span>
               </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between text-xs text-slate-400 pb-1">
-                  <span>
-                    Displaying <strong>{Math.min(showAll ? filteredResults.length : 8, filteredResults.length)}</strong> of <strong>{filteredResults.length}</strong> prioritized opportunities
-                  </span>
-                  <span className="text-emerald-400 font-medium">✓ Verified from official government gazettes</span>
-                </div>
+              
+              {/* Radial Arc SVG */}
+              <div className="w-28 h-14 mx-auto mt-3 overflow-hidden relative">
+                <div className="w-28 h-28 rounded-full border-8 border-[#23262f] border-t-emerald-400 border-r-emerald-400 -rotate-45" />
+              </div>
+              <p className="text-[11px] text-neutral-400 mt-2">Verified directly from gazette notices</p>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(showAll ? filteredResults : filteredResults.slice(0, 8)).map((result) => (
-                    <SchemeCard
-                      key={result.scheme.id}
-                      result={result}
-                      userProfile={profile}
-                      onBookmarkToggle={handleToggleBookmark}
-                      isBookmarked={savedSchemeIds.includes(result.scheme.id)}
-                    />
-                  ))}
-                </div>
+            <div className="pt-3 border-t border-[#23262f] text-[11px] text-neutral-400 text-center">
+              Profile: <strong className="text-neutral-200">{profile.name}</strong>
+            </div>
+          </div>
 
-                {filteredResults.length > 8 && (
-                  <div className="pt-4 text-center">
-                    <button
-                      onClick={() => setShowAll(!showAll)}
-                      className="rounded-xl border border-slate-700 bg-slate-900/90 px-6 py-2.5 text-xs font-bold text-slate-200 hover:border-blue-500/50 hover:bg-slate-800 hover:text-white transition-all shadow-md"
-                    >
-                      {showAll ? 'Show Top 8 Recommended Only' : `View All ${filteredResults.length} Relevant Schemes ↓`}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+          {/* 3. Industry Insights (FinPoint CNBC, FT news layout) */}
+          <div className="lg:col-span-4 fin-canvas p-6 bg-[#121418] border border-[#23262f] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-white uppercase tracking-wider">
+                  <Sparkles className="h-3.5 w-3.5 text-[#ff451a]" />
+                  <span>Public Policy Digest</span>
+                </div>
+                <ArrowUpRight className="h-3.5 w-3.5 text-neutral-400" />
+              </div>
+
+              <p className="text-xs text-neutral-300 leading-relaxed">
+                National welfare allocations exceeded <strong>₹4.18 Lakh Crore</strong> in the current union budget. DBT mandates require active <strong>Aadhaar-seeded accounts</strong> for instant payouts.
+              </p>
+            </div>
+
+            {/* Official Source Badges (FinPoint logo icons footer) */}
+            <div className="pt-4 border-t border-[#23262f] flex items-center justify-between text-xs text-neutral-400">
+              <span className="font-semibold text-neutral-300">Sources:</span>
+              <div className="flex items-center gap-2 text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-[#181a20] border border-[#262933]">myScheme</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#181a20] border border-[#262933]">data.gov.in</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#181a20] border border-[#262933]">NSP</span>
+              </div>
+            </div>
           </div>
 
         </div>
+
+        {/* ALL FILTERED SCHEMES SECTION (Curated Cards with FinPoint styling) */}
+        <section className="fin-canvas p-6 sm:p-8 bg-[#121418] border border-[#23262f]">
+          
+          {/* Section Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#23262f]">
+            <div>
+              <h3 className="text-lg font-bold text-white">Prioritized Matching Schemes</h3>
+              <p className="text-xs text-neutral-400">
+                Displaying {Math.min(showAll ? filteredSchemes.length : 8, filteredSchemes.length)} of {filteredSchemes.length} schemes tailored to you
+              </p>
+            </div>
+
+            {/* Central vs State Pills (FinPoint 1D, 1W, 1M, 1Y tabs) */}
+            <div className="flex items-center gap-2 self-start">
+              {[
+                { id: 'all', label: 'All Levels' },
+                { id: 'central', label: 'Central Sector' },
+                { id: 'state', label: `${profile.state} State` },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-white text-black font-bold shadow-sm'
+                      : 'bg-[#181a20] text-neutral-400 border border-[#262933] hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(showAll ? filteredSchemes : filteredSchemes.slice(0, 8)).map(result => (
+              <SchemeCard
+                key={result.scheme.id}
+                result={result}
+                userProfile={profile}
+                onBookmarkToggle={handleToggleBookmark}
+                isBookmarked={savedSchemeIds.includes(result.scheme.id)}
+              />
+            ))}
+          </div>
+
+          {/* Show All Toggle */}
+          {filteredSchemes.length > 8 && (
+            <div className="mt-6 text-center pt-4 border-t border-[#23262f]">
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="px-6 py-2.5 rounded-full bg-[#181a20] border border-[#262933] hover:border-[#343845] text-xs font-bold text-white transition-all hover:bg-[#20232a]"
+              >
+                {showAll ? 'Show Top 8 Recommended Only' : `View All ${filteredSchemes.length} Relevant Schemes ↓`}
+              </button>
+            </div>
+          )}
+
+        </section>
 
       </main>
     </div>
