@@ -1,11 +1,11 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Scheme, UserProfile } from './types';
 
-// Safe server-side singleton client
-const apiKey = process.env.GEMINI_API_KEY || '';
-let genAI: GoogleGenerativeAI | null = null;
-if (apiKey) {
-  genAI = new GoogleGenerativeAI(apiKey);
+// Helper to get or instantiate GoogleGenerativeAI client dynamically
+function getGenAI(): GoogleGenerativeAI | null {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+  return new GoogleGenerativeAI(apiKey);
 }
 
 // In-memory runtime cache to save tokens and ensure instant load
@@ -40,29 +40,10 @@ export async function getGeminiSchemeExplanation(
     }
   }
 
-  // 2. Call Gemini API if available
-  if (genAI && apiKey) {
+  // 2. Call Gemini API if GEMINI_API_KEY is available
+  const genAI = getGenAI();
+  if (genAI) {
     try {
-      // Support latest Flash models with fallback
-      let model;
-      try {
-        model = genAI.getGenerativeModel({
-          model: 'gemini-2.5-flash',
-          generationConfig: {
-            temperature: 0.2,
-            responseMimeType: 'application/json',
-          },
-        });
-      } catch {
-        model = genAI.getGenerativeModel({
-          model: 'gemini-1.5-flash',
-          generationConfig: {
-            temperature: 0.2,
-            responseMimeType: 'application/json',
-          },
-        });
-      }
-
       const prompt = `You are SuchakAI's Government Scheme Advisor for Indian citizens.
 Analyze this scheme against the citizen's profile and explain in clear, reassuring, and precise language why they qualify and what immediate steps they should take.
 
@@ -100,7 +81,32 @@ Output ONLY a JSON object with this exact structure:
   ]
 }`;
 
-      const response = await model.generateContent(prompt);
+      // Try gemini-2.0-flash first (fastest, latest), with fallback to gemini-1.5-flash
+      let response;
+      try {
+        const model20 = genAI.getGenerativeModel({
+          model: 'gemini-2.0-flash',
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: 'application/json',
+          },
+        });
+        response = await model20.generateContent(prompt);
+      } catch (err20) {
+        const model15 = genAI.getGenerativeModel({
+          model: 'gemini-1.5-flash',
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: 'application/json',
+          },
+        });
+        response = await model15.generateContent(prompt);
+      }
+
+      if (!response) {
+        throw new Error('No response received from Gemini');
+      }
+
       const text = response.response.text();
       const parsed = JSON.parse(text);
 

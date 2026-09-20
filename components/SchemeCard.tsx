@@ -48,10 +48,10 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Match Score Badge (FinPoint Yellow Pill) */}
-              <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${getBadgeStyle(matchScore)} shadow-sm`}>
-                <Sparkles className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-2.5">
+              {/* Match Score (Clean, no box, balanced contrast) */}
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--accent-yellow-text)]">
+                <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0" />
                 <span>{matchScore}% Match</span>
               </div>
 
@@ -114,9 +114,12 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
             </div>
 
             {cautionNotes && cautionNotes.length > 0 && (
-              <div className="mt-2.5 flex items-start gap-2 text-xs text-amber-600 dark:text-amber-300/90 border-t border-[var(--border-subtle)] pt-2">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                <span className="text-[11px] leading-snug">Note: {cautionNotes[0]}</span>
+              <div className="mt-2.5 flex items-start gap-2 text-xs border-t border-[var(--border-subtle)] pt-2.5">
+                <AlertTriangle className="h-3.5 w-3.5 text-[var(--caution-icon)] shrink-0 mt-0.5" />
+                <span className="text-[11px] leading-snug">
+                  <strong className="font-semibold text-[var(--caution-label)]">Note: </strong>
+                  <span className="text-[var(--caution-text)] font-normal">{cautionNotes[0]}</span>
+                </span>
               </div>
             )}
           </div>
@@ -126,9 +129,9 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
         <div className="pt-3.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={() => setShowAIModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-yellow-badge-bg)] text-[var(--accent-yellow-text)] border border-[var(--accent-yellow-badge-border)] px-3.5 py-1.5 text-xs font-bold hover:brightness-110 transition-all shadow-xs group/btn"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--accent-yellow-text)] hover:opacity-85 transition-opacity group/btn py-1"
           >
-            <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0 transition-transform group-hover/btn:rotate-12" />
+            <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0 transition-transform group-hover/btn:scale-110" />
             <span>AI Reasoning Breakdown</span>
           </button>
 

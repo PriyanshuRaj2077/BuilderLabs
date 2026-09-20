@@ -140,15 +140,15 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
 
             {/* Watchouts & Caveats */}
             {aiData?.watchouts && aiData.watchouts.length > 0 && (
-              <div className="rounded-[20px] bg-[var(--card-subtle)] border border-amber-500/40 p-4">
-                <h4 className="font-bold text-amber-500 dark:text-amber-400 text-xs uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <AlertCircle className="h-4 w-4 text-amber-500" />
+              <div className="rounded-[20px] bg-[var(--card-subtle)] border border-rose-500/25 p-4">
+                <h4 className="font-bold text-rose-700 dark:text-rose-300 text-xs uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                   <span>Prerequisites & Watchouts</span>
                 </h4>
                 <ul className="space-y-1.5 text-xs text-[var(--text-secondary)]">
                   {aiData.watchouts.map((w, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <span className="text-amber-500 font-bold">•</span>
+                      <span className="text-rose-600 dark:text-rose-400 font-bold">•</span>
                       <span>{w}</span>
                     </li>
                   ))}

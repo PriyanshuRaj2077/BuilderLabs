@@ -201,14 +201,17 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
               </div>
 
               {aiExplanation?.watchouts && aiExplanation.watchouts.length > 0 && (
-                <div className="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/30">
-                  <h4 className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                    <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                <div className="bg-rose-500/10 p-4 rounded-2xl border border-rose-500/25">
+                  <h4 className="text-xs font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <AlertTriangle className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
                     <span>Watchouts & Verification</span>
                   </h4>
                   <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
                     {aiExplanation.watchouts.map((w, idx) => (
-                      <li key={idx}>• {w}</li>
+                      <li key={idx} className="flex items-start gap-1.5">
+                        <span className="text-rose-400 font-bold">•</span>
+                        <span>{w}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -347,15 +350,15 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
 
           {/* 9. Inconsistencies or Outdated Info Flagged */}
           {scheme.inconsistencies && scheme.inconsistencies.length > 0 && (
-            <div className="rounded-2xl bg-amber-500/10 p-6 border border-amber-500/30">
-              <h3 className="text-sm font-bold text-amber-600 dark:text-amber-300 mb-2 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <div className="rounded-2xl bg-rose-500/10 p-6 border border-rose-500/25">
+              <h3 className="text-sm font-bold text-rose-700 dark:text-rose-300 mb-2 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                 <span>9. Cross-Source Inconsistencies Detected</span>
               </h3>
-              <ul className="space-y-1.5 text-xs text-amber-700 dark:text-amber-200/80">
+              <ul className="space-y-1.5 text-xs text-[var(--text-secondary)]">
                 {scheme.inconsistencies.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span>⚠️</span>
+                    <span className="text-rose-400">•</span>
                     <span>{item}</span>
                   </li>
                 ))}

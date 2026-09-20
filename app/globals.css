@@ -19,9 +19,9 @@
   --accent-parrot-badge-border: rgba(34, 229, 94, 0.3);
   --accent-parrot-glow: rgba(34, 229, 94, 0.25);
   
-  /* Vibrant Golden Yellow (Match pill & brand accents) */
+  /* Vibrant Golden Yellow (Clean borderless text & accents) */
   --accent-yellow: #facc15;
-  --accent-yellow-text: #facc15;
+  --accent-yellow-text: #fde047;
   --accent-yellow-badge-bg: rgba(250, 204, 21, 0.15);
   --accent-yellow-badge-border: rgba(250, 204, 21, 0.35);
   --accent-yellow-glow: rgba(250, 204, 21, 0.25);
@@ -34,42 +34,54 @@
 
   --input-bg: #15171d;
   --input-border: #262933;
+
+  /* Eye-friendly balanced Caution Note tokens (Dark Mode) */
+  --caution-icon: #fb7185;
+  --caution-label: #fda4af;
+  --caution-text: #f1f5f9;
+  --caution-border: rgba(251, 113, 133, 0.25);
 }
 
 /* Light Mode (Clean, sleek Apple/FinPoint high-contrast light theme) */
 html.light {
-  --background: #f1f3f7;
+  --background: #eef2f6;
   --panel-bg: #ffffff;
   --card-bg: #ffffff;
   --card-hover: #f8fafc;
-  --card-subtle: #f1f5f9;
-  --border-subtle: #e2e8f0;
-  --border-highlight: #cbd5e1;
+  --card-subtle: #f1f4f8;
+  --border-subtle: #d0d7e2;
+  --border-highlight: #94a3b8;
 
-  --accent-orange: #ff451a;
-  --accent-orange-glow: rgba(255, 69, 26, 0.18);
+  --accent-orange: #ea3810;
+  --accent-orange-glow: rgba(234, 56, 16, 0.18);
   /* Parrot green for light mode with rich high-contrast readability */
-  --accent-parrot: #16a34a;
-  --accent-parrot-text: #15803d;
+  --accent-parrot: #15803d;
+  --accent-parrot-text: #14532d;
   --accent-parrot-badge-bg: #dcfce7;
   --accent-parrot-badge-border: #86efac;
-  --accent-parrot-glow: rgba(22, 163, 74, 0.2);
+  --accent-parrot-glow: rgba(21, 128, 61, 0.2);
 
   /* Vibrant Golden Yellow for light mode with rich contrast readability */
-  --accent-yellow: #ca8a04;
-  --accent-yellow-text: #854d0e;
-  --accent-yellow-badge-bg: #fef9c3;
-  --accent-yellow-badge-border: #fde047;
-  --accent-yellow-glow: rgba(202, 138, 4, 0.2);
+  --accent-yellow: #b45309;
+  --accent-yellow-text: #78350f;
+  --accent-yellow-badge-bg: #fef3c7;
+  --accent-yellow-badge-border: #fcd34d;
+  --accent-yellow-glow: rgba(180, 83, 9, 0.2);
 
-  --accent-blue: #2563eb;
+  --accent-blue: #1d4ed8;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --text-primary: #070b12;
+  --text-secondary: #242e3d;
+  --text-muted: #4b5869;
 
-  --input-bg: #f8fafc;
+  --input-bg: #ffffff;
   --input-border: #cbd5e1;
+
+  /* Eye-friendly balanced Caution Note tokens (Light Mode) */
+  --caution-icon: #e11d48;
+  --caution-label: #be123c;
+  --caution-text: #0f172a;
+  --caution-border: rgba(225, 29, 72, 0.2);
 }
 
 body {

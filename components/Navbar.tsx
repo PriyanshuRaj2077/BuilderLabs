@@ -20,9 +20,14 @@ export function Navbar({ currentProfile }: NavbarProps) {
       setTheme(saved);
       if (saved === 'light') {
         document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
       } else {
+        document.documentElement.classList.add('dark');
         document.documentElement.classList.remove('light');
       }
+    } else {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     }
   }, []);
 
@@ -32,7 +37,9 @@ export function Navbar({ currentProfile }: NavbarProps) {
     localStorage.setItem('suchakai_theme', nextTheme);
     if (nextTheme === 'light') {
       document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
     } else {
+      document.documentElement.classList.add('dark');
       document.documentElement.classList.remove('light');
     }
   };
@@ -48,18 +55,16 @@ export function Navbar({ currentProfile }: NavbarProps) {
     <header className="w-full pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex h-14 items-center justify-between gap-4">
         
-        {/* Left: Brand Logo (Unique Radiant Yellow Beacon) */}
+        {/* Left: Brand Logo (Clean, no box wrapper, balanced contrast) */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-yellow-400/20 via-amber-400/10 to-transparent border border-yellow-500/40 shadow-sm group-hover:border-yellow-400 group-hover:shadow-[0_0_12px_rgba(250,204,21,0.3)] transition-all">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-[var(--accent-yellow)] fill-current" stroke="none">
-                {/* 4-point radiant beacon star */}
-                <path d="M12 2L14.6 9.4L22 12L14.6 14.6L12 22L9.4 14.6L2 12L9.4 9.4L12 2Z" />
-                {/* Central luminous core */}
-                <circle cx="12" cy="12" r="2.2" className="fill-white" />
-              </svg>
-            </div>
-            <span className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
+          <Link href="/" className="flex items-center gap-2 group">
+            <svg viewBox="0 0 24 24" className="w-6 h-6 text-[var(--accent-yellow)] fill-current shrink-0 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(250,204,21,0.35)]" stroke="none">
+              {/* 4-point radiant beacon star */}
+              <path d="M12 2L14.6 9.4L22 12L14.6 14.6L12 22L9.4 14.6L2 12L9.4 9.4L12 2Z" />
+              {/* Central luminous core */}
+              <circle cx="12" cy="12" r="2.2" className="fill-white" />
+            </svg>
+            <span className="text-xl font-extrabold tracking-tight text-[var(--text-primary)]">
               Suchak<span className="text-[var(--accent-yellow-text)]">AI</span>
             </span>
           </Link>
