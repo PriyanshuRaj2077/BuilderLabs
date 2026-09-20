@@ -372,29 +372,29 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold text-[var(--text-primary)] tracking-tight">Scheme Category Weight</h3>
-                <span className="text-xs text-[var(--text-muted)]">25 Total Programs</span>
+                <span className="text-xs text-[var(--text-muted)] font-semibold">{SEED_SCHEMES.length} Total Programs</span>
               </div>
 
               {/* Vertical Bar Chart */}
               <div className="grid grid-cols-4 gap-3 items-end h-36 pt-4 pb-2 border-b border-[var(--border-subtle)]">
                 <div className="flex flex-col items-center gap-1.5 h-full justify-end">
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{eduCount * 12}%</span>
-                  <div className="w-full bg-[#ff451a] rounded-xl" style={{ height: `${Math.max(20, Math.min(100, eduCount * 25))}%` }} />
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{Math.round((eduCount / (eligibleSchemes.length || 1)) * 100)}%</span>
+                  <div className="w-full bg-[#ff451a] rounded-xl" style={{ height: `${Math.max(15, Math.min(100, (eduCount / (eligibleSchemes.length || 1)) * 100))}%` }} />
                   <span className="text-[10px] text-[var(--text-secondary)]">Edu</span>
                 </div>
                 <div className="flex flex-col items-center gap-1.5 h-full justify-end">
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{agriCount * 15}%</span>
-                  <div className="w-full bg-[#22e55e] rounded-xl" style={{ height: `${Math.max(20, Math.min(100, agriCount * 30))}%` }} />
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{Math.round((agriCount / (eligibleSchemes.length || 1)) * 100)}%</span>
+                  <div className="w-full bg-[#22e55e] rounded-xl" style={{ height: `${Math.max(15, Math.min(100, (agriCount / (eligibleSchemes.length || 1)) * 100))}%` }} />
                   <span className="text-[10px] text-[var(--text-secondary)]">Agri</span>
                 </div>
                 <div className="flex flex-col items-center gap-1.5 h-full justify-end">
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{msmeCount * 14}%</span>
-                  <div className="w-full bg-[var(--text-primary)] rounded-xl" style={{ height: `${Math.max(20, Math.min(100, msmeCount * 22))}%` }} />
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{Math.round((msmeCount / (eligibleSchemes.length || 1)) * 100)}%</span>
+                  <div className="w-full bg-[var(--text-primary)] rounded-xl" style={{ height: `${Math.max(15, Math.min(100, (msmeCount / (eligibleSchemes.length || 1)) * 100))}%` }} />
                   <span className="text-[10px] text-[var(--text-secondary)]">MSME</span>
                 </div>
                 <div className="flex flex-col items-center gap-1.5 h-full justify-end">
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{socialCount * 10}%</span>
-                  <div className="w-full bg-amber-400 rounded-xl" style={{ height: `${Math.max(20, Math.min(100, socialCount * 20))}%` }} />
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{Math.round((socialCount / (eligibleSchemes.length || 1)) * 100)}%</span>
+                  <div className="w-full bg-amber-400 rounded-xl" style={{ height: `${Math.max(15, Math.min(100, (socialCount / (eligibleSchemes.length || 1)) * 100))}%` }} />
                   <span className="text-[10px] text-[var(--text-secondary)]">Social</span>
                 </div>
               </div>
@@ -417,7 +417,7 @@ export default function DashboardPage() {
 
             <div className="my-auto py-3 text-center">
               <div className="text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
-                {eligibleSchemes.length} <span className="text-[var(--text-muted)] text-2xl font-normal">/ 25</span>
+                {eligibleSchemes.length} <span className="text-[var(--text-muted)] text-2xl font-normal">/ {SEED_SCHEMES.length}</span>
               </div>
               
               {/* Radial Arc SVG with Parrot Green */}
@@ -469,7 +469,7 @@ export default function DashboardPage() {
             <div>
               <h3 className="text-lg font-bold text-[var(--text-primary)]">Prioritized Matching Schemes</h3>
               <p className="text-xs text-[var(--text-secondary)]">
-                Displaying {Math.min(showAll ? filteredSchemes.length : 8, filteredSchemes.length)} of {filteredSchemes.length} schemes tailored to you
+                Displaying {Math.min(showAll ? filteredSchemes.length : 12, filteredSchemes.length)} of {filteredSchemes.length} matching schemes (from {SEED_SCHEMES.length} total government programs)
               </p>
             </div>
 
@@ -497,7 +497,7 @@ export default function DashboardPage() {
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-            {(showAll ? filteredSchemes : filteredSchemes.slice(0, 8)).map(result => (
+            {(showAll ? filteredSchemes : filteredSchemes.slice(0, 12)).map(result => (
               <SchemeCard
                 key={result.scheme.id}
                 result={result}
@@ -509,13 +509,13 @@ export default function DashboardPage() {
           </div>
 
           {/* Show All Toggle */}
-          {filteredSchemes.length > 8 && (
+          {filteredSchemes.length > 12 && (
             <div className="mt-6 text-center pt-4 border-t border-[var(--border-subtle)]">
               <button
                 onClick={() => setShowAll(!showAll)}
                 className="px-6 py-2.5 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--border-highlight)] text-xs font-bold text-[var(--text-primary)] transition-all hover:bg-[var(--card-hover)] shadow-sm"
               >
-                {showAll ? 'Show Top 8 Recommended Only' : `View All ${filteredSchemes.length} Relevant Schemes ↓`}
+                {showAll ? 'Show Top 12 Recommended Only' : `View All ${filteredSchemes.length} Relevant Schemes ↓`}
               </button>
             </div>
           )}
