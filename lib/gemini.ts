@@ -43,13 +43,25 @@ export async function getGeminiSchemeExplanation(
   // 2. Call Gemini API if available
   if (genAI && apiKey) {
     try {
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: {
-          temperature: 0.2,
-          responseMimeType: 'application/json',
-        }
-      });
+      // Support latest Flash models with fallback
+      let model;
+      try {
+        model = genAI.getGenerativeModel({
+          model: 'gemini-2.5-flash',
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: 'application/json',
+          },
+        });
+      } catch {
+        model = genAI.getGenerativeModel({
+          model: 'gemini-1.5-flash',
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: 'application/json',
+          },
+        });
+      }
 
       const prompt = `You are SuchakAI's Government Scheme Advisor for Indian citizens.
 Analyze this scheme against the citizen's profile and explain in clear, reassuring, and precise language why they qualify and what immediate steps they should take.

@@ -3,7 +3,7 @@
 import React, { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
-import { SEED_SCHEMES, DEMO_PERSONAS } from '@/lib/data/seed-schemes';
+import { SEED_SCHEMES } from '@/lib/data/seed-schemes';
 import { evaluateSchemeEligibility } from '@/lib/matching';
 import { UserProfile, Scheme } from '@/lib/types';
 import { AIExplanationResult } from '@/lib/gemini';
@@ -24,11 +24,25 @@ import {
   Info
 } from 'lucide-react';
 
+const DEFAULT_CITIZEN_PROFILE: UserProfile = {
+  name: 'Citizen',
+  age: 25,
+  gender: 'all',
+  state: 'All India',
+  category: 'General',
+  occupation: 'job_seeker',
+  education: 'undergraduate',
+  annualIncome: 250000,
+  isRural: false,
+  hasDisability: false,
+  interests: ['Higher Education Scholarships', 'Skill Training & Employment']
+};
+
 export default function SchemeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const schemeId = resolvedParams.id;
 
-  const [profile, setProfile] = useState<UserProfile>(DEMO_PERSONAS[0].profile);
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_CITIZEN_PROFILE);
   const [aiExplanation, setAiExplanation] = useState<AIExplanationResult | null>(null);
   const [loadingAI, setLoadingAI] = useState(true);
 

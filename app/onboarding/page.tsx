@@ -66,20 +66,17 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
 
   // Form State
-  const [name, setName] = useState('Priya Sharma');
-  const [age, setAge] = useState<number>(21);
+  const [name, setName] = useState('');
+  const [age, setAge] = useState<number>(24);
   const [gender, setGender] = useState<Gender>('female');
   const [state, setState] = useState<IndianState>('Maharashtra');
-  const [category, setCategory] = useState<Category>('SC');
-  const [occupation, setOccupation] = useState<Occupation>('student');
+  const [category, setCategory] = useState<Category>('General');
+  const [occupation, setOccupation] = useState<Occupation>('job_seeker');
   const [education, setEducation] = useState<EducationLevel>('undergraduate');
-  const [annualIncome, setAnnualIncome] = useState<number>(200000);
+  const [annualIncome, setAnnualIncome] = useState<number>(250000);
   const [isRural, setIsRural] = useState(false);
   const [hasDisability, setHasDisability] = useState(false);
-  const [interests, setInterests] = useState<string[]>([
-    'Higher Education Scholarships',
-    'Skill Training & Employment'
-  ]);
+  const [interests, setInterests] = useState<string[]>([]);
 
   // Real-time matched preview count
   const [matchedPreviewCount, setMatchedPreviewCount] = useState(0);

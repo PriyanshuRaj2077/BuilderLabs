@@ -6,7 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { SchemeCard } from '@/components/SchemeCard';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { UserProfile, SchemeMatchResult, SchemeCategory } from '@/lib/types';
-import { SEED_SCHEMES, DEMO_PERSONAS } from '@/lib/data/seed-schemes';
+import { SEED_SCHEMES } from '@/lib/data/seed-schemes';
 import { rankSchemesForProfile } from '@/lib/matching';
 import { 
   Sparkles, 
@@ -22,9 +22,23 @@ import {
   RotateCcw
 } from 'lucide-react';
 
+const DEFAULT_CITIZEN_PROFILE: UserProfile = {
+  name: 'Citizen',
+  age: 25,
+  gender: 'all',
+  state: 'All India',
+  category: 'General',
+  occupation: 'job_seeker',
+  education: 'undergraduate',
+  annualIncome: 250000,
+  isRural: false,
+  hasDisability: false,
+  interests: ['Higher Education Scholarships', 'Skill Training & Employment']
+};
+
 export default function DashboardPage() {
   // Current user profile state
-  const [profile, setProfile] = useState<UserProfile>(DEMO_PERSONAS[0].profile);
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_CITIZEN_PROFILE);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
@@ -48,11 +62,6 @@ export default function DashboardPage() {
       } catch {}
     }
   }, []);
-
-  const handleSelectPersona = (newProfile: UserProfile) => {
-    setProfile(newProfile);
-    localStorage.setItem('soochai_profile', JSON.stringify(newProfile));
-  };
 
   const handleToggleBookmark = (schemeId: string) => {
     const updated = savedSchemeIds.includes(schemeId)
@@ -119,7 +128,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col">
-      <Navbar currentProfile={profile} onSelectPersona={handleSelectPersona} />
+      <Navbar currentProfile={profile} />
 
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1">
         

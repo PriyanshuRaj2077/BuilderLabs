@@ -3,16 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Sparkles, BookMarked, UserCircle, Search } from 'lucide-react';
-import { DEMO_PERSONAS } from '@/lib/data/seed-schemes';
+import { Sparkles, UserCircle } from 'lucide-react';
 import { UserProfile } from '@/lib/types';
 
 interface NavbarProps {
   currentProfile?: UserProfile | null;
-  onSelectPersona?: (profile: UserProfile) => void;
 }
 
-export function Navbar({ currentProfile, onSelectPersona }: NavbarProps) {
+export function Navbar({ currentProfile }: NavbarProps) {
   const pathname = usePathname();
 
   return (
@@ -71,31 +69,14 @@ export function Navbar({ currentProfile, onSelectPersona }: NavbarProps) {
           </nav>
         </div>
 
-        {/* Right Action: Demo Persona Switcher & Profile status */}
-        <div className="flex items-center gap-3">
-          {onSelectPersona && (
-            <div className="hidden lg:flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
-              <span className="px-2 text-slate-400 font-medium">Judge Demo:</span>
-              {DEMO_PERSONAS.map((dp) => {
-                const isActive = currentProfile?.name === dp.profile.name;
-                return (
-                  <button
-                    key={dp.name}
-                    onClick={() => onSelectPersona(dp.profile)}
-                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-blue-600 text-white font-semibold shadow'
-                        : 'text-slate-300 hover:bg-slate-800'
-                    }`}
-                    title={dp.label}
-                  >
-                    <span>{dp.avatar}</span>
-                    <span>{dp.name.split(' ')[0]}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+        {/* Right Action: Auth / Profile status */}
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/auth"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+          >
+            <span>Sign In</span>
+          </Link>
 
           <Link
             href="/onboarding"

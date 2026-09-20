@@ -16,7 +16,7 @@ import {
   Clock,
   Layers
 } from 'lucide-react';
-import { DEMO_PERSONAS, SEED_SCHEMES } from '@/lib/data/seed-schemes';
+import { SEED_SCHEMES } from '@/lib/data/seed-schemes';
 import { UserProfile } from '@/lib/types';
 
 export default function LandingPage() {
@@ -33,15 +33,9 @@ export default function LandingPage() {
     }
   }, []);
 
-  const handleSelectPersona = (p: UserProfile) => {
-    localStorage.setItem('soochai_profile', JSON.stringify(p));
-    setProfile(p);
-    router.push('/dashboard');
-  };
-
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col">
-      <Navbar currentProfile={profile} onSelectPersona={handleSelectPersona} />
+      <Navbar currentProfile={profile} />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28">
@@ -89,34 +83,32 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Quick Persona Demo Strip for Hackathon Judges */}
-          <div className="mt-14 max-w-3xl mx-auto rounded-2xl glass-panel p-5 text-left border border-slate-800/80">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                <Users className="h-3.5 w-3.5 text-emerald-400" />
-                <span>Instant Hackathon Live Demo (Try 1-Click Personas):</span>
+          {/* Real-time verified opportunities preview banner */}
+          <div className="mt-14 max-w-3xl mx-auto rounded-2xl glass-panel p-6 text-left border border-slate-800/80">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                <span>Active Verified Government Opportunities:</span>
               </span>
-              <span className="text-[11px] text-slate-400 hidden sm:inline">Calculates live match scores instantly</span>
+              <span className="text-[11px] text-emerald-400 font-semibold">25 National & State Schemes Loaded</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {DEMO_PERSONAS.map((dp) => (
-                <button
-                  key={dp.name}
-                  onClick={() => handleSelectPersona(dp.profile)}
-                  className="rounded-xl bg-slate-950/70 p-3.5 border border-slate-800 text-left hover:border-blue-500/50 hover:bg-slate-900 transition-all group"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">{dp.avatar}</span>
-                    <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
-                        {dp.name}
-                      </h4>
-                      <p className="text-[11px] text-slate-400">{dp.label}</p>
-                    </div>
-                  </div>
-                </button>
-              ))}
+              <div className="rounded-xl bg-slate-950/80 p-3.5 border border-slate-800">
+                <span className="text-[10px] font-semibold text-blue-400 uppercase tracking-wider block mb-1">Education</span>
+                <h4 className="text-xs font-bold text-white">Post-Matric Scholarships</h4>
+                <p className="text-[11px] text-slate-400 mt-1">100% Tuition Fee + Maintenance for SC/ST/OBC</p>
+              </div>
+              <div className="rounded-xl bg-slate-950/80 p-3.5 border border-slate-800">
+                <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider block mb-1">Agriculture</span>
+                <h4 className="text-xs font-bold text-white">PM-KISAN Samman Nidhi</h4>
+                <p className="text-[11px] text-slate-400 mt-1">₹6,000/year direct cash support to farmers</p>
+              </div>
+              <div className="rounded-xl bg-slate-950/80 p-3.5 border border-slate-800">
+                <span className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider block mb-1">Enterprise</span>
+                <h4 className="text-xs font-bold text-white">Pradhan Mantri MUDRA</h4>
+                <p className="text-[11px] text-slate-400 mt-1">Up to ₹20 Lakh collateral-free business loans</p>
+              </div>
             </div>
           </div>
 
