@@ -27,7 +27,7 @@ export default function AuthPage() {
       });
       const j = await res.json();
       if (!res.ok || j.error) { setError(j.error || t('common_error')); return; }
-      setOk(j.message || 'Done');
+      setOk(j.message || t('auth_done'));
       setTimeout(() => router.push(mode === 'up' ? '/onboarding' : '/dashboard'), 900);
     } catch {
       setError(t('common_error'));
@@ -36,21 +36,21 @@ export default function AuthPage() {
 
   return (
     <PageShell>
-      <div className="page-shell flex max-w-md flex-1 flex-col justify-center py-12">
-        <h1 className="font-display text-3xl font-bold">{mode === 'in' ? t('auth_signin_t') : t('auth_signup_t')}</h1>
-        <p className="mt-2 text-sm text-[var(--ink-2)]">{mode === 'in' ? t('auth_signin_d') : t('auth_signup_d')}</p>
-        <form onSubmit={submit} className="card mt-6 space-y-4 p-6">
-          {error && <p role="alert" className="rounded-md bg-[var(--red-soft)] px-3 py-2 text-sm text-[var(--red)]">{error}</p>}
-          {ok && <p role="status" className="rounded-md bg-[var(--ok-soft)] px-3 py-2 text-sm text-[var(--ok)]">{ok}</p>}
+      <div className="page-shell flex max-w-md flex-1 flex-col justify-center py-14 sm:py-20">
+        <h1 className="font-display text-3xl font-bold sm:text-4xl">{mode === 'in' ? t('auth_signin_t') : t('auth_signup_t')}</h1>
+        <p className="mt-3 text-sm leading-relaxed text-[var(--ink-2)]">{mode === 'in' ? t('auth_signin_d') : t('auth_signup_d')}</p>
+        <form onSubmit={submit} className="card mt-8 space-y-6">
+          {error && <p role="alert" className="rounded-md bg-[var(--red-soft)] px-4 py-3 text-sm text-[var(--red)]">{error}</p>}
+          {ok && <p role="status" className="rounded-md bg-[var(--ok-soft)] px-4 py-3 text-sm text-[var(--ok)]">{ok}</p>}
           {mode === 'up' && <div><label className="label" htmlFor="nm">{t('auth_name')}</label><input id="nm" className="field" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /></div>}
           <div><label className="label" htmlFor="em">{t('auth_email')}</label><input id="em" className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="you@example.com" /></div>
           <div><label className="label" htmlFor="pw">{t('auth_pass')}</label><input id="pw" className="field" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete={mode === 'up' ? 'new-password' : 'current-password'} /></div>
           <button className="btn btn-primary w-full" disabled={loading}>{loading ? t('common_loading') : mode === 'in' ? t('auth_signin_btn') : t('auth_signup_btn')}</button>
         </form>
-        <button className="mt-3 text-sm text-[var(--ink-2)] hover:underline" onClick={() => { setMode(mode === 'in' ? 'up' : 'in'); setError(''); setOk(''); }}>
+        <button className="mt-6 min-h-[2.75rem] text-sm text-[var(--ink-2)] hover:underline" onClick={() => { setMode(mode === 'in' ? 'up' : 'in'); setError(''); setOk(''); }}>
           {mode === 'in' ? t('auth_new') : t('auth_have')}
         </button>
-        <Link href="/onboarding" className="mt-2 text-center text-sm text-[var(--ink-3)] hover:underline">{t('auth_guest')}</Link>
+        <Link href="/onboarding" className="mt-2 min-h-[2.75rem] text-center text-sm text-[var(--ink-3)] hover:underline">{t('auth_guest')}</Link>
       </div>
     </PageShell>
   );

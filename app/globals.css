@@ -3,20 +3,29 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --bg: #fbfaf8;
-  --surface: #ffffff;
-  --surface-2: #f4f1ec;
-  --line: #e6e0d6;
-  --line-strong: #d4cabb;
-  --ink: #1b1712;
+  --bg: #f5f1ea;
+  --surface: #fdfbf6;
+  --surface-2: #ebe5d6;
+  --line: #e3dac9;
+  --line-strong: #cfc2ab;
+  --ink: #1d1914;
   --ink-2: #57504a;
-  --ink-3: #857c70;
+  --ink-3: #867d71;
   --red: #b3261e;
   --red-strong: #8f1d17;
-  --red-soft: #fbeae9;
+  --red-soft: #faeae8;
   --ok: #1e7e34;
   --ok-soft: #e6f4ea;
-  --warn-soft: #fef3e2;
+  --warn-soft: #fdf3e3;
+  --hero-a: rgba(179, 38, 30, 0.085);
+  --hero-b: rgba(179, 38, 30, 0.05);
+  --hero-warm: rgba(146, 106, 52, 0.05);
+  --hero-line: rgba(29, 25, 20, 0.05);
+  --footer-bg: #231b15;
+  --footer-ink: #ece2d2;
+  --footer-muted: #b3a48e;
+  --footer-faint: #8a7c68;
+  --footer-line: rgba(236, 226, 210, 0.14);
   --radius: 10px;
   --font-body: "Inter", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Source Serif 4", "Noto Serif Devanagari", Georgia, "Times New Roman", serif;
@@ -37,6 +46,15 @@
   --ok: #6fce85;
   --ok-soft: #16281c;
   --warn-soft: #2c2317;
+  --hero-a: rgba(224, 83, 72, 0.1);
+  --hero-b: rgba(224, 83, 72, 0.055);
+  --hero-warm: rgba(224, 180, 120, 0.05);
+  --hero-line: rgba(243, 237, 230, 0.05);
+  --footer-bg: #100d0b;
+  --footer-ink: #ece2d2;
+  --footer-muted: #b3a48e;
+  --footer-faint: #8a7c68;
+  --footer-line: rgba(236, 226, 210, 0.14);
 }
 
 html { scroll-behavior: smooth; }
@@ -57,15 +75,22 @@ body {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  padding: 1.5rem;
 }
+@media (min-width: 640px) { .card { padding: 1.75rem; } }
 
-.card-hover { transition: border-color 0.15s ease, transform 0.15s ease; }
-.card-hover:hover { border-color: var(--line-strong); }
+.card-hover { transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; }
+.card-hover:hover {
+  border-color: var(--line-strong);
+  box-shadow: 0 2px 8px rgba(29, 25, 20, 0.05);
+  transform: translateY(-2px);
+}
+.dark .card-hover:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  border-radius: 8px; font-weight: 600; font-size: 0.875rem;
-  padding: 0.625rem 1.1rem; border: 1px solid transparent;
+  border-radius: 8px; font-weight: 600; font-size: 0.9rem; line-height: 1.25;
+  padding: 0.8rem 1.5rem; border: 1px solid transparent; min-height: 3rem;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   cursor: pointer; white-space: nowrap;
 }
@@ -78,16 +103,22 @@ body {
 .btn-secondary:hover { border-color: var(--ink-3); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
+/* Sizing variants keep every button on one consistent scale. */
+.btn-lg { padding: 1rem 2.25rem; font-size: 1rem; }
+.btn-sm { min-height: 2.75rem; padding: 0.55rem 1.1rem; font-size: 0.8125rem; }
+.btn-xs { min-height: 2.5rem; padding: 0.45rem 0.95rem; font-size: 0.75rem; }
+.btn-icon { min-height: 2.75rem; min-width: 2.75rem; padding: 0; justify-content: center; }
+
 .field {
   width: 100%; border-radius: 8px; border: 1px solid var(--line-strong);
-  background: var(--surface); color: var(--ink);
-  padding: 0.6rem 0.8rem; font-size: 0.875rem;
+  background: var(--bg); color: var(--ink);
+  padding: 0.8rem 1rem; font-size: 0.9rem; min-height: 3rem;
   transition: border-color 0.15s ease;
 }
 .field::placeholder { color: var(--ink-3); }
 .field:focus { outline: none; border-color: var(--red); }
 
-.label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--ink-2); margin-bottom: 0.35rem; }
+.label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--ink-2); margin-bottom: 0.5rem; }
 
 .badge {
   display: inline-flex; align-items: center; gap: 0.3rem;
@@ -101,17 +132,199 @@ body {
 
 .hr { border-top: 1px solid var(--line); }
 
-.page-shell { max-width: 1120px; margin: 0 auto; padding: 0 1rem; }
-@media (min-width: 640px) { .page-shell { padding: 0 1.5rem; } }
+.page-shell { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; }
+@media (min-width: 640px) { .page-shell { padding: 0 2rem; } }
+@media (min-width: 1024px) { .page-shell { padding: 0 2.5rem; } }
+
+.section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+@media (min-width: 640px) { .section { padding-top: 5rem; padding-bottom: 5rem; } }
 
 .fade-in { animation: fadeUp 0.25s ease both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .hero::before, .hero::after, .hero-shape { animation: none !important; }
+  .reveal { opacity: 1; transform: none; }
 }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
+
+/* Landing hero: layered red and warm washes over a soft tinted base, plus
+   two soft shapes that drift very slowly and a faint texture that breathes.
+   Distinct from the page without glow, neon color, or floating particles. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(58rem 26rem at 10% -38%, var(--hero-a), transparent 70%),
+    radial-gradient(50rem 24rem at 90% 138%, var(--hero-b), transparent 72%),
+    radial-gradient(44rem 22rem at 78% -24%, var(--hero-b), transparent 75%),
+    radial-gradient(60rem 30rem at 50% 130%, var(--hero-warm), transparent 75%),
+    linear-gradient(to bottom, var(--surface) 0%, var(--bg) 78%, var(--surface-2) 100%);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(112deg, var(--hero-line) 0 1px, transparent 1px 64px);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 82%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 82%);
+  animation: heroTint 18s ease-in-out infinite alternate;
+}
+@keyframes heroTint {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 34rem;
+  height: 34rem;
+  left: -10rem;
+  top: -12rem;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, var(--hero-a), transparent 72%);
+  filter: blur(2px);
+  animation: heroDrift 26s ease-in-out infinite alternate;
+}
+.hero-shape {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 30rem;
+  height: 30rem;
+  right: -9rem;
+  bottom: -13rem;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, var(--hero-b), transparent 70%);
+  filter: blur(2px);
+  animation: heroDrift 32s ease-in-out infinite alternate-reverse;
+}
+.hero > *:not(.hero-shape) { position: relative; z-index: 1; }
+@keyframes heroDrift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(1.5rem, 1rem, 0) scale(1.04); }
+}
+
+/* Hero project name loop: two names stacked in one fixed box, crossfading
+   in place so there is no layout shift. Typography stays identical. */
+.hero-title {
+  display: inline-grid;
+  min-width: min(18rem, 80vw);
+  justify-items: center;
+  align-items: center;
+  vertical-align: baseline;
+}
+.hero-name {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  white-space: nowrap;
+}
+.hero-name-hi { font-family: var(--font-display); }
+.hero-name.is-on { opacity: 1; transform: none; }
+
+/* Gentle entrance for hero copy and sections. Fast and subtle. */
+.entrance { animation: fadeUp 0.5s ease both; }
+.entrance-1 { animation-delay: 0.05s; }
+.entrance-2 { animation-delay: 0.12s; }
+.entrance-3 { animation-delay: 0.2s; }
+.reveal { opacity: 0; transform: translateY(10px); }
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* Navbar links: fast color shift plus a small red underline that grows in. */
+.nav-link {
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.3rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: 50% 50%;
+  transition: transform 0.18s ease;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link[aria-current="page"] { color: var(--ink); }
+.nav-link[aria-current="page"]::after { transform: scaleX(1); }
+
+/* Cards that manage their own padding through an inner element. */
+.card-tight { padding: 0; }
+
+/* Hero keeps generous breathing room above the page sections. */
+.hero .section { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+@media (min-width: 640px) {
+  .hero .section { padding-top: 6.5rem; padding-bottom: 7rem; }
+}
+
+/* Final content block on a page: deliberate separation before the footer. */
+.section-tail { padding-bottom: 5rem; }
+@media (min-width: 640px) {
+  .section-tail { padding-bottom: 7rem; }
+}
+
+/* Site footer: deep warm neutral identity in both themes, roomy type. */
+.site-footer {
+  background: var(--footer-bg);
+  color: var(--footer-ink);
+  border-top: 1px solid var(--footer-line);
+}
+/* Footer content sits further inward than page content so text never
+   starts hard at the edge. */
+.site-footer .page-shell {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+@media (min-width: 640px) {
+  .site-footer .page-shell {
+    padding-left: 4.5rem;
+    padding-right: 4.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .site-footer .page-shell {
+    padding-left: 6rem;
+    padding-right: 6rem;
+  }
+}
+.site-footer a { color: var(--footer-muted); }
+.site-footer a:hover { color: var(--footer-ink); }
+.footer-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--footer-faint);
+}
+.footer-link {
+  display: inline-block;
+  padding: 0.3rem 0;
+  line-height: 1.7;
+  transition: color 0.15s ease;
+}
+.footer-bottom {
+  border-top: 1px solid var(--footer-line);
+  color: var(--footer-faint);
+}

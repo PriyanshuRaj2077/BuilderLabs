@@ -4,15 +4,15 @@ import { ThemeProvider } from "@/lib/theme/context";
 import { LanguageProvider } from "@/lib/i18n/context";
 
 export const metadata: Metadata = {
-  title: "SoochAI — Find Government Schemes You Qualify For",
-  description: "Plain-language discovery for Indian government schemes. Check eligibility in English or Hindi.",
+  title: "SUCHAK AI: Find Government Schemes You Qualify For",
+  description: "SUCHAK AI helps you discover Indian government schemes in plain language. Check eligibility in English or Hindi.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfaf8" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f5f1" },
     { media: "(prefers-color-scheme: dark)", color: "#131110" },
   ],
 };
