@@ -57,7 +57,7 @@ export function Navbar({ currentProfile }: NavbarProps) {
         
         {/* Left: Brand Logo (Clean, no box wrapper, balanced contrast) */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/dashboard" className="flex items-center gap-2 group">
             <svg viewBox="0 0 24 24" className="w-6 h-6 text-[var(--accent-yellow)] fill-current shrink-0 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(250,204,21,0.35)]" stroke="none">
               {/* 4-point radiant beacon star */}
               <path d="M12 2L14.6 9.4L22 12L14.6 14.6L12 22L9.4 14.6L2 12L9.4 9.4L12 2Z" />
@@ -126,7 +126,7 @@ export function Navbar({ currentProfile }: NavbarProps) {
             href="/onboarding"
             className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--border-highlight)] transition-all text-xs shadow-sm"
           >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#ff451a] to-amber-500 flex items-center justify-center text-[11px] font-bold text-white uppercase shadow">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-[11px] font-extrabold text-zinc-950 uppercase shadow">
               {currentProfile?.name ? currentProfile.name.charAt(0) : 'C'}
             </div>
             <span className="hidden sm:inline font-semibold text-[var(--text-primary)]">
