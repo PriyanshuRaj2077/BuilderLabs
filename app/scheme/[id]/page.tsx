@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { SEED_SCHEMES } from '@/lib/data/seed-schemes';
 import { evaluateSchemeEligibility } from '@/lib/matching';
-import { UserProfile, Scheme } from '@/lib/types';
+import { UserProfile } from '@/lib/types';
 import { AIExplanationResult } from '@/lib/gemini';
 import { 
   Building2, 
@@ -18,8 +18,6 @@ import {
   Clock, 
   IndianRupee, 
   ShieldCheck, 
-  Share2,
-  Bookmark,
   ChevronRight,
   Info
 } from 'lucide-react';
@@ -87,60 +85,60 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
   }, [scheme.id, profile]);
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] flex flex-col font-sans transition-colors duration-200">
       <Navbar currentProfile={profile} />
 
-      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-8 flex-1">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-8 flex-1 space-y-6">
         
         {/* Back Link & Navigation */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Dashboard</span>
           </Link>
 
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-blue-950/60 px-2.5 py-1 text-xs font-medium text-blue-300 border border-blue-800/40">
+            <span className="rounded-full bg-[var(--card-subtle)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)] border border-[var(--border-subtle)]">
               {scheme.categoryTag}
             </span>
-            <span className="rounded-md bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-300">
+            <span className="rounded-full bg-[var(--card-subtle)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)] border border-[var(--border-subtle)]">
               {scheme.level === 'central' ? 'Central Sector' : `${scheme.state} State`}
             </span>
           </div>
         </div>
 
         {/* Scheme Header Banner */}
-        <section className="rounded-3xl glass-panel-glow p-6 sm:p-8 mb-8 border border-blue-900/40">
+        <section className="fin-canvas p-6 sm:p-8">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="space-y-2">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Building2 className="h-4 w-4 text-blue-400" />
+              <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1.5">
+                <Building2 className="h-4 w-4 text-[#ff451a]" />
                 {scheme.ministry}
               </span>
 
-              <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
                 {scheme.name}
               </h1>
 
               {scheme.nameHindi && (
-                <p className="text-sm font-medium text-slate-400">{scheme.nameHindi}</p>
+                <p className="text-sm font-medium text-[var(--text-muted)]">{scheme.nameHindi}</p>
               )}
 
-              <p className="text-sm text-slate-300 max-w-2xl leading-relaxed pt-2">
+              <p className="text-sm text-[var(--text-secondary)] max-w-2xl leading-relaxed pt-2">
                 {scheme.description}
               </p>
             </div>
 
             {/* Match Score Gauge Card */}
-            <div className="rounded-2xl bg-slate-950/90 p-5 border border-slate-800 text-center shrink-0 min-w-[200px]">
-              <span className="text-xs font-semibold text-slate-400 block mb-1">Personal Match</span>
-              <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+            <div className="rounded-2xl bg-[var(--card-subtle)] p-5 border border-[var(--border-subtle)] text-center shrink-0 min-w-[200px] shadow-sm">
+              <span className="text-xs font-semibold text-[var(--text-secondary)] block mb-1">Personal Match</span>
+              <div className="text-4xl font-black text-[#ff451a]">
                 {matchResult.matchScore}%
               </div>
-              <div className="mt-2 text-xs font-semibold text-emerald-400 flex items-center justify-center gap-1">
+              <div className="mt-2 text-xs font-semibold text-[var(--accent-parrot-text)] flex items-center justify-center gap-1">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 <span>{matchResult.isEligible ? 'Highly Eligible' : 'Conditionally Eligible'}</span>
               </div>
@@ -148,7 +146,7 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
                 href={scheme.officialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 flex items-center justify-center gap-1.5 w-full rounded-xl bg-gradient-to-r from-blue-600 to-emerald-600 py-2.5 text-xs font-bold text-white hover:brightness-110 shadow-lg shadow-blue-500/20 transition-all"
+                className="mt-4 flex items-center justify-center gap-1.5 w-full rounded-full bg-[var(--text-primary)] py-2.5 text-xs font-bold text-[var(--background)] hover:opacity-90 transition-all shadow-sm"
               >
                 <span>Apply on Official Portal</span>
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -161,41 +159,41 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
         <div className="space-y-6">
 
           {/* 1. Who It Is For */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800">
-            <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-              <Info className="h-4 w-4 text-blue-400" />
+          <div className="fin-canvas p-6">
+            <h3 className="text-base font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
+              <Info className="h-4 w-4 text-[#ff451a]" />
               <span>1. Target Beneficiaries (Who It Is For)</span>
             </h3>
-            <p className="text-sm text-slate-300 leading-relaxed">
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
               {scheme.whoIsItFor}
             </p>
           </div>
 
           {/* 2. Gemini AI Personalized Match Explanation */}
-          <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/40 p-6 border border-blue-800/40">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">
+          <div className="fin-canvas p-6 border-l-4 border-l-[#ff451a]">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#ff451a] mb-2">
               <Sparkles className="h-4 w-4" />
               <span>2. Why It Matches Your Profile (Gemini Reasoning)</span>
             </div>
 
-            <p className="text-sm font-semibold text-slate-200 mb-4 leading-relaxed">
+            <p className="text-sm font-semibold text-[var(--text-primary)] mb-4 leading-relaxed">
               {aiExplanation?.summary || matchResult.whyItMatches}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div>
-                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+              <div className="p-4 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)]">
+                <h4 className="text-xs font-bold text-[var(--accent-parrot-text)] uppercase tracking-wider mb-2 flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[var(--accent-parrot)]" />
                   <span>Criteria Met</span>
                 </h4>
-                <ul className="space-y-1.5 text-xs text-slate-300">
+                <ul className="space-y-1.5 text-xs text-[var(--text-secondary)]">
                   {(aiExplanation?.matchedPoints || [
                     `State: Resident of ${profile.state}`,
                     `Category: Fits within ${profile.category} guidelines`,
                     `Occupation: Aligns with ${profile.occupation.replace('_', ' ')} status`
                   ]).map((point, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <span className="text-emerald-400">✓</span>
+                      <span className="text-[var(--accent-parrot-text)] font-bold">✓</span>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -203,12 +201,12 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
               </div>
 
               {aiExplanation?.watchouts && aiExplanation.watchouts.length > 0 && (
-                <div className="bg-amber-950/20 p-3 rounded-xl border border-amber-900/40">
-                  <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                    <AlertTriangle className="h-3.5 w-3.5" />
+                <div className="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/30">
+                  <h4 className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
                     <span>Watchouts & Verification</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-amber-200/90">
+                  <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
                     {aiExplanation.watchouts.map((w, idx) => (
                       <li key={idx}>• {w}</li>
                     ))}
@@ -219,36 +217,36 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* 3. Detailed Eligibility Criteria */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800">
-            <h3 className="text-base font-bold text-white mb-3">
+          <div className="fin-canvas p-6">
+            <h3 className="text-base font-bold text-[var(--text-primary)] mb-3">
               3. Official Eligibility Criteria
             </h3>
-            <p className="text-xs text-slate-300 leading-relaxed bg-slate-950 p-4 rounded-xl border border-slate-800 mb-4 font-mono">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed bg-[var(--card-subtle)] p-4 rounded-2xl border border-[var(--border-subtle)] mb-4 font-mono">
               {scheme.eligibility.rawText}
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-400 block">Age Range</span>
-                <span className="font-semibold text-white">
+              <div className="p-3 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)]">
+                <span className="text-[var(--text-muted)] block">Age Range</span>
+                <span className="font-semibold text-[var(--text-primary)]">
                   {scheme.eligibility.ageMin || 0} - {scheme.eligibility.ageMax || 'No Limit'} yrs
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-400 block">Income Ceiling</span>
-                <span className="font-semibold text-white">
+              <div className="p-3 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)]">
+                <span className="text-[var(--text-muted)] block">Income Ceiling</span>
+                <span className="font-semibold text-[var(--text-primary)]">
                   {scheme.eligibility.incomeMax ? `₹${(scheme.eligibility.incomeMax/100000).toFixed(1)} Lakh/yr` : 'No Income Cap'}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-400 block">Target Category</span>
-                <span className="font-semibold text-white">
+              <div className="p-3 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)]">
+                <span className="text-[var(--text-muted)] block">Target Category</span>
+                <span className="font-semibold text-[var(--text-primary)]">
                   {scheme.eligibility.categories.join(', ')}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-400 block">Gender</span>
-                <span className="font-semibold text-white capitalize">
+              <div className="p-3 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)]">
+                <span className="text-[var(--text-muted)] block">Gender</span>
+                <span className="font-semibold text-[var(--text-primary)] capitalize">
                   {scheme.eligibility.gender || 'All Genders'}
                 </span>
               </div>
@@ -256,18 +254,18 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* 4. Benefits */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800">
-            <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-              <IndianRupee className="h-4 w-4 text-emerald-400" />
+          <div className="fin-canvas p-6">
+            <h3 className="text-base font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
+              <IndianRupee className="h-4 w-4 text-[#ff451a]" />
               <span>4. Scheme Benefits</span>
             </h3>
-            <div className="text-lg font-bold text-emerald-400 mb-3">
+            <div className="text-lg font-bold text-[var(--accent-parrot-text)] mb-3">
               {scheme.benefitAmount || 'Direct Welfare Benefits'}
             </div>
             <ul className="space-y-2">
               {scheme.benefits.map((b, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-xs text-slate-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+                <li key={i} className="flex items-start gap-2.5 text-xs text-[var(--text-secondary)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#22e55e] mt-1.5 shrink-0" />
                   <span>{b}</span>
                 </li>
               ))}
@@ -275,15 +273,15 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* 5. Required Documents */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800">
-            <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
-              <FileText className="h-4 w-4 text-indigo-400" />
+          <div className="fin-canvas p-6">
+            <h3 className="text-base font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
+              <FileText className="h-4 w-4 text-[#ff451a]" />
               <span>5. Mandatory Documents Checklist</span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {scheme.requiredDocuments.map((doc, i) => (
-                <div key={i} className="flex items-center gap-2 p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300">
-                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" />
+                <div key={i} className="flex items-center gap-2 p-3 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)]">
+                  <CheckCircle2 className="h-4 w-4 text-[#22e55e] shrink-0" />
                   <span>{doc}</span>
                 </div>
               ))}
@@ -291,38 +289,38 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* 6. Step-by-Step Application Procedure */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800">
-            <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-              <ChevronRight className="h-4 w-4 text-blue-400" />
+          <div className="fin-canvas p-6">
+            <h3 className="text-base font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+              <ChevronRight className="h-4 w-4 text-[#ff451a]" />
               <span>6. Application Procedure ({scheme.applicationMode.toUpperCase()})</span>
             </h3>
             <div className="space-y-3">
               {scheme.applicationProcedure.map((step, idx) => (
-                <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600/30 text-blue-400 font-bold shrink-0 text-[11px]">
+                <div key={idx} className="flex items-start gap-3 p-3 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ff451a]/15 text-[#ff451a] font-bold shrink-0 text-[11px]">
                     {idx + 1}
                   </span>
-                  <span className="pt-0.5 leading-relaxed">{step}</span>
+                  <span className="pt-0.5 leading-relaxed text-[var(--text-primary)]">{step}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* 7. Official Source & Portal Link */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="fin-canvas p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-[var(--text-primary)]">
                 7. Official Verification & Portal Link
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Host Portal: <strong className="text-slate-200">{scheme.portalName}</strong>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                Host Portal: <strong className="text-[var(--text-primary)]">{scheme.portalName}</strong>
               </p>
             </div>
             <a
               href={scheme.officialUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-500 shadow-md transition-all shrink-0"
+              className="inline-flex items-center gap-2 rounded-full bg-[#ff451a] px-5 py-2.5 text-xs font-bold text-white hover:brightness-110 shadow-md transition-all shrink-0"
             >
               <span>Open {scheme.portalName}</span>
               <ExternalLink className="h-4 w-4" />
@@ -330,18 +328,18 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* 8. Deadline & Verification Freshness */}
-          <div className="rounded-2xl glass-panel p-6 border border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="fin-canvas p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <span className="text-xs font-semibold text-slate-400 block mb-1">8. Application Deadline / Status</span>
-              <div className="text-sm font-bold text-white flex items-center gap-2">
-                <Clock className="h-4 w-4 text-amber-400" />
+              <span className="text-xs font-semibold text-[var(--text-muted)] block mb-1">8. Application Deadline / Status</span>
+              <div className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <Clock className="h-4 w-4 text-amber-500" />
                 <span>{scheme.deadline || 'Ongoing Open Scheme'}</span>
               </div>
             </div>
             <div>
-              <span className="text-xs font-semibold text-slate-400 block mb-1">Data Verification Stamp</span>
-              <div className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+              <span className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Data Verification Stamp</span>
+              <div className="text-sm font-bold text-[var(--accent-parrot-text)] flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-[#22e55e]" />
                 <span>Verified against official gazette on {scheme.lastVerifiedDate}</span>
               </div>
             </div>
@@ -349,12 +347,12 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
 
           {/* 9. Inconsistencies or Outdated Info Flagged */}
           {scheme.inconsistencies && scheme.inconsistencies.length > 0 && (
-            <div className="rounded-2xl bg-amber-950/20 p-6 border border-amber-900/50">
-              <h3 className="text-sm font-bold text-amber-300 mb-2 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <div className="rounded-2xl bg-amber-500/10 p-6 border border-amber-500/30">
+              <h3 className="text-sm font-bold text-amber-600 dark:text-amber-300 mb-2 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <span>9. Cross-Source Inconsistencies Detected</span>
               </h3>
-              <ul className="space-y-1.5 text-xs text-amber-200/80">
+              <ul className="space-y-1.5 text-xs text-amber-700 dark:text-amber-200/80">
                 {scheme.inconsistencies.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2">
                     <span>⚠️</span>
@@ -371,3 +369,4 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
     </div>
   );
 }
+

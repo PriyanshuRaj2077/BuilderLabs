@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Search, Bell, User } from 'lucide-react';
+import { Search, Bell, Sun, Moon, Sparkles } from 'lucide-react';
 import { UserProfile } from '@/lib/types';
 
 interface NavbarProps {
@@ -12,6 +12,30 @@ interface NavbarProps {
 
 export function Navbar({ currentProfile }: NavbarProps) {
   const pathname = usePathname();
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('suchakai_theme') as 'dark' | 'light' | null;
+    if (saved) {
+      setTheme(saved);
+      if (saved === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('suchakai_theme', nextTheme);
+    if (nextTheme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  };
 
   const navItems = [
     { label: 'Dashboard', href: '/dashboard' },
@@ -24,24 +48,24 @@ export function Navbar({ currentProfile }: NavbarProps) {
     <header className="w-full pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex h-14 items-center justify-between gap-4">
         
-        {/* Left: Brand Logo (FinPoint inspired diamond icon) */}
+        {/* Left: Brand Logo */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#181a20] border border-[#262933] shadow-sm group-hover:border-[#ff451a] transition-colors">
-              {/* FinPoint geometric diamond mark */}
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--card-bg)] border border-[var(--border-subtle)] shadow-sm group-hover:border-[#ff451a] transition-colors">
               <div className="relative w-4 h-4 flex items-center justify-center">
-                <div className="w-2.5 h-2.5 bg-emerald-400 rotate-45 rounded-[2px]" />
+                {/* Parrot green accent diamond */}
+                <div className="w-2.5 h-2.5 bg-[#22e55e] rotate-45 rounded-[2px]" />
                 <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-[#ff451a] rounded-full" />
               </div>
             </div>
-            <span className="text-lg font-bold tracking-tight text-white">
+            <span className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
               Suchak<span className="text-[#ff451a]">AI</span>
             </span>
           </Link>
         </div>
 
         {/* Center: FinPoint Floating Segmented Navigation Pill */}
-        <nav className="hidden md:flex items-center p-1 rounded-full bg-[#16181d] border border-[#23262f] text-xs">
+        <nav className="hidden md:flex items-center p-1 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-xs shadow-sm">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -50,8 +74,8 @@ export function Navbar({ currentProfile }: NavbarProps) {
                 href={item.href}
                 className={`px-4 py-1.5 rounded-full font-medium transition-all ${
                   isActive
-                    ? 'bg-white text-black font-bold shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#ff451a] text-white font-bold shadow-sm'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {item.label}
@@ -60,32 +84,46 @@ export function Navbar({ currentProfile }: NavbarProps) {
           })}
         </nav>
 
-        {/* Right: Round Icon Actions (Search, Notifications, Profile Avatar) */}
+        {/* Right: Actions (Theme Toggle, Search, Notifications, Profile) */}
         <div className="flex items-center gap-2">
+          
+          {/* Light / Dark Mode Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-4 w-4 text-amber-400" />
+            ) : (
+              <Moon className="h-4 w-4 text-indigo-600" />
+            )}
+          </button>
+
           <Link
             href="/search"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#16181d] border border-[#23262f] text-neutral-300 hover:text-white hover:border-[#343845] transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors"
             title="Search schemes"
           >
             <Search className="h-4 w-4" />
           </Link>
 
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#16181d] border border-[#23262f] text-neutral-300 hover:text-white hover:border-[#343845] transition-colors relative"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors relative"
             title="Notifications"
           >
             <Bell className="h-4 w-4" />
-            <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#ff451a]" />
+            <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#22e55e]" />
           </button>
 
           <Link
             href="/onboarding"
-            className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-[#16181d] border border-[#23262f] hover:border-[#343845] transition-all text-xs"
+            className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--border-highlight)] transition-all text-xs shadow-sm"
           >
             <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#ff451a] to-amber-500 flex items-center justify-center text-[11px] font-bold text-white uppercase shadow">
               {currentProfile?.name ? currentProfile.name.charAt(0) : 'C'}
             </div>
-            <span className="hidden sm:inline font-semibold text-neutral-200">
+            <span className="hidden sm:inline font-semibold text-[var(--text-primary)]">
               {currentProfile?.name ? currentProfile.name.split(' ')[0] : 'Profile'}
             </span>
           </Link>
