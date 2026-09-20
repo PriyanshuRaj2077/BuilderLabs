@@ -135,7 +135,7 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
             {/* Match Score Gauge Card */}
             <div className="rounded-2xl bg-[var(--card-subtle)] p-5 border border-[var(--border-subtle)] text-center shrink-0 min-w-[200px] shadow-sm">
               <span className="text-xs font-semibold text-[var(--text-secondary)] block mb-1">Personal Match</span>
-              <div className="text-4xl font-black text-[#facc15] dark:text-[#facc15] light:text-[#ca8a04]">
+              <div className="text-4xl font-black text-[var(--accent-yellow-text)]">
                 {matchResult.matchScore}%
               </div>
               <div className="mt-2 text-xs font-semibold text-[var(--accent-parrot-text)] flex items-center justify-center gap-1">
@@ -170,9 +170,9 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* 2. Gemini AI Personalized Match Explanation */}
-          <div className="fin-canvas p-6 border-l-4 border-l-[#ff451a]">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#ff451a] mb-2">
-              <Sparkles className="h-4 w-4" />
+          <div className="fin-canvas p-6 border-l-4 border-l-[var(--accent-yellow)]">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--accent-yellow-text)] mb-2">
+              <Sparkles className="h-4 w-4 text-[var(--accent-yellow)]" />
               <span>2. Why It Matches Your Profile (Gemini Reasoning)</span>
             </div>
 

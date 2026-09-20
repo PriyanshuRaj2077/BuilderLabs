@@ -427,7 +427,7 @@ export default function OnboardingPage() {
 
               {/* Ready summary banner */}
               <div className="p-4 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-[#ff451a] shrink-0" />
+                <Sparkles className="h-5 w-5 text-[var(--accent-yellow)] shrink-0" />
                 <div className="text-xs">
                   <p className="font-semibold text-[var(--text-primary)]">Your personalized engine is ready!</p>
                   <p className="text-[var(--text-secondary)]">Clicking finish will automatically populate your dashboard with ranked schemes and Gemini rationales.</p>

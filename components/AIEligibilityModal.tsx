@@ -67,8 +67,8 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-[#ff451a]">
-          <Sparkles className="h-4 w-4" />
+        <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-[var(--accent-yellow-text)]">
+          <Sparkles className="h-4 w-4 text-[var(--accent-yellow)]" />
           <span>Gemini AI Policy Reasoning</span>
         </div>
 
@@ -102,15 +102,15 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
         {/* Body Content */}
         {loading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-[#ff451a]" />
+            <Loader2 className="h-8 w-8 animate-spin text-[var(--accent-yellow)]" />
             <p className="text-sm text-[var(--text-secondary)]">Gemini is translating official legal gazette rules for you...</p>
           </div>
         ) : (
           <div className="mt-5 space-y-4 text-sm">
             
-            {/* AI Summary Statement (FinPoint Orange/Dark accent box) */}
+            {/* AI Summary Statement (FinPoint Yellow accent box) */}
             <div className="rounded-[20px] bg-[var(--card-subtle)] border border-[var(--border-subtle)] p-4">
-              <span className="text-[11px] font-bold text-[#ff451a] uppercase tracking-wider block mb-1">
+              <span className="text-[11px] font-bold text-[var(--accent-yellow-text)] uppercase tracking-wider block mb-1">
                 Executive Eligibility Summary
               </span>
               <p className="font-medium text-[var(--text-primary)] leading-relaxed text-xs sm:text-sm">
@@ -159,7 +159,7 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
             {/* Next Steps to Apply */}
             <div className="p-4 rounded-[20px] bg-[var(--card-subtle)] border border-[var(--border-subtle)]">
               <h4 className="font-bold text-[var(--text-primary)] text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                <ArrowRight className="h-4 w-4 text-[#ff451a]" />
+                <ArrowRight className="h-4 w-4 text-[var(--accent-yellow)]" />
                 <span>Application Pathway</span>
               </h4>
               <div className="space-y-2 text-xs">
@@ -168,7 +168,7 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
                   'Submit the online registration form through the official government portal.'
                 ]).map((step, idx) => (
                   <div key={idx} className="flex items-center gap-2.5 rounded-xl bg-[var(--panel-bg)] p-2.5 border border-[var(--border-subtle)] text-[var(--text-primary)]">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#ff451a]/15 text-[#ff451a] text-[10px] font-bold shrink-0">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-yellow-badge-bg)] text-[var(--accent-yellow-text)] border border-[var(--accent-yellow-badge-border)] text-[10px] font-bold shrink-0">
                       {idx + 1}
                     </span>
                     <span>{step}</span>

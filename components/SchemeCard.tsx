@@ -57,7 +57,7 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
 
           {/* Scheme Title */}
           <Link href={`/scheme/${scheme.id}`} className="block group transition-colors">
-            <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] group-hover:text-[#ff451a] tracking-tight leading-snug">
+            <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-yellow)] tracking-tight leading-snug">
               {scheme.name}
             </h3>
             {scheme.nameHindi && (
@@ -91,7 +91,7 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
           {/* Benefits summary */}
           <div className="mb-4 space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-primary)]">
-              <IndianRupee className="h-3.5 w-3.5 text-[#ff451a]" />
+              <IndianRupee className="h-3.5 w-3.5 text-[var(--accent-yellow)]" />
               <span>
                 Benefit: <strong className="text-[var(--text-primary)] font-bold">{scheme.benefitAmount || scheme.benefits[0]}</strong>
               </span>
@@ -112,10 +112,10 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
         <div className="pt-3.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={() => setShowAIModal(true)}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#ff451a] hover:opacity-80 transition-opacity"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-yellow-text)] hover:opacity-80 transition-opacity"
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>AI Reasoning Breakdown</span>
+            <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0" />
+            <span className="text-[var(--accent-yellow-text)]">AI Reasoning Breakdown</span>
           </button>
 
           <div className="flex items-center gap-2">

@@ -401,7 +401,7 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
-                  <Sparkles className="h-3.5 w-3.5 text-[#ff451a]" />
+                  <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)]" />
                   <span>Public Policy Digest</span>
                 </div>
                 <ArrowUpRight className="h-3.5 w-3.5 text-[var(--text-muted)]" />

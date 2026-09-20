@@ -41,7 +41,7 @@ export default function LandingPage() {
           
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--card-bg)] px-4 py-1.5 text-xs font-semibold text-[var(--text-secondary)] mb-6 shadow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-[#ff451a]" />
+            <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)]" />
             <span>AI-Powered Government Opportunity Discovery</span>
           </div>
 

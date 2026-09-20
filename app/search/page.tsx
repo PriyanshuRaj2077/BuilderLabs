@@ -115,11 +115,11 @@ export default function SearchPage() {
                   <span className="rounded-full bg-[var(--card-subtle)] px-2.5 py-0.5 text-[var(--text-secondary)] font-medium border border-[var(--border-subtle)]">
                     {scheme.level === 'central' ? 'Central' : scheme.state}
                   </span>
-                  <span className="text-[#ff451a] font-semibold">{scheme.categoryTag}</span>
+                  <span className="text-[var(--accent-yellow-text)] font-semibold">{scheme.categoryTag}</span>
                 </div>
 
                 <Link href={`/scheme/${scheme.id}`} className="block group">
-                  <h3 className="text-base font-bold text-[var(--text-primary)] group-hover:text-[#ff451a] transition-colors">
+                  <h3 className="text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-yellow)] transition-colors">
                     {scheme.name}
                   </h3>
                 </Link>
@@ -130,7 +130,7 @@ export default function SearchPage() {
 
                 <div className="text-xs text-[var(--text-primary)] font-medium space-y-1.5 mb-4">
                   <div className="flex items-center gap-1.5">
-                    <IndianRupee className="h-3.5 w-3.5 text-[#ff451a]" />
+                    <IndianRupee className="h-3.5 w-3.5 text-[var(--accent-yellow)]" />
                     <span className="font-semibold">{scheme.benefitAmount || scheme.benefits[0]}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[var(--text-muted)]">
@@ -143,7 +143,7 @@ export default function SearchPage() {
               <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between">
                 <Link
                   href={`/scheme/${scheme.id}`}
-                  className="text-xs font-semibold text-[#ff451a] hover:opacity-80 flex items-center gap-1"
+                  className="text-xs font-semibold text-[var(--accent-yellow-text)] hover:opacity-80 flex items-center gap-1"
                 >
                   <span>View Details</span>
                   <ChevronRight className="h-3.5 w-3.5" />
