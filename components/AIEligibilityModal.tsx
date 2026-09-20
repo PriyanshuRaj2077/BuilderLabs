@@ -182,9 +182,21 @@ export function AIEligibilityModal({ scheme, profile, matchResult, onClose }: AI
 
         {/* Modal Footer */}
         <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)]">
-            <ShieldCheck className="h-4 w-4 text-[var(--accent-parrot)]" />
-            <span>Verified Official Gazette Grounding</span>
+          <div className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)]">
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-[var(--accent-parrot)]" />
+              <span>Verified Official Gazette</span>
+            </div>
+            {aiData?.source === 'gemini' ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
+                <Sparkles className="h-3 w-3" />
+                <span>Live Gemini 2.0 Flash</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--card-subtle)] text-[var(--text-muted)] text-[10px] font-medium border border-[var(--border-subtle)]">
+                <span>Rules Engine</span>
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
