@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Bell, Sun, Moon, Sparkles } from 'lucide-react';
+import { Search, Bell, Sun, Moon, Sparkles, Menu, X } from 'lucide-react';
 import { UserProfile } from '@/lib/types';
 
 interface NavbarProps {
@@ -13,6 +13,11 @@ interface NavbarProps {
 export function Navbar({ currentProfile }: NavbarProps) {
   const pathname = usePathname();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const saved = localStorage.getItem('suchakai_theme') as 'dark' | 'light' | null;
@@ -80,7 +85,7 @@ export function Navbar({ currentProfile }: NavbarProps) {
                 href={item.href}
                 className={`px-4 py-1.5 rounded-full font-medium transition-all ${
                   isActive
-                    ? 'bg-[#ff451a] text-white font-bold shadow-sm'
+                    ? 'bg-[var(--accent-yellow)] text-white dark:text-zinc-950 font-bold shadow-sm'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
@@ -90,7 +95,7 @@ export function Navbar({ currentProfile }: NavbarProps) {
           })}
         </nav>
 
-        {/* Right: Actions (Theme Toggle, Search, Notifications, Profile) */}
+        {/* Right: Actions (Theme Toggle, Search, Notifications, Profile, Mobile Menu) */}
         <div className="flex items-center gap-2">
           
           {/* Light / Dark Mode Toggle */}
@@ -133,9 +138,45 @@ export function Navbar({ currentProfile }: NavbarProps) {
               {currentProfile?.name ? currentProfile.name.split(' ')[0] : 'Profile'}
             </span>
           </Link>
+
+          {/* Mobile Menu Hamburger Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden flex h-9 w-9 items-center justify-center rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors"
+            title="Toggle Menu"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
         </div>
 
       </div>
+
+      {/* Mobile Navigation Dropdown Menu */}
+      {mobileMenuOpen && (
+        <nav className="md:hidden mt-3 p-2.5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="flex flex-col gap-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-between ${
+                    isActive
+                      ? 'bg-[var(--accent-yellow)] text-white dark:text-zinc-950 font-bold shadow-sm'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-subtle)]'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {isActive && <span className="text-[10px] uppercase font-bold tracking-wider opacity-75">Active</span>}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
