@@ -1,6 +1,11 @@
 import { Scheme } from '../types';
+import { SCHEMES_BATCH_1 } from './schemes-batch-1';
+import { SCHEMES_BATCH_2 } from './schemes-batch-2';
+import { SCHEMES_BATCH_3 } from './schemes-batch-3';
+import { SCHEMES_BATCH_4 } from './schemes-batch-4';
+import { SCHEMES_BATCH_5 } from './schemes-batch-5';
 
-export const SEED_SCHEMES: Scheme[] = [
+const CORE_SCHEMES: Scheme[] = [
   // 1. Agriculture
   {
     id: 'pm-kisan-01',
@@ -1175,6 +1180,15 @@ export const SEED_SCHEMES: Scheme[] = [
     lastVerifiedDate: '2026-08-29',
     isPopular: true
   }
+];
+
+export const SEED_SCHEMES: Scheme[] = [
+  ...CORE_SCHEMES,
+  ...SCHEMES_BATCH_1,
+  ...SCHEMES_BATCH_2,
+  ...SCHEMES_BATCH_3,
+  ...SCHEMES_BATCH_4,
+  ...SCHEMES_BATCH_5,
 ];
 
 export const POPULAR_INTERESTS = [

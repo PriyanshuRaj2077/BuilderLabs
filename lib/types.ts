@@ -110,6 +110,8 @@ export interface Scheme {
     educationMin?: EducationLevel;
     state?: IndianState;
     residency?: string;
+    isRural?: boolean;
+    hasDisability?: boolean;
     rawText: string;
   };
 

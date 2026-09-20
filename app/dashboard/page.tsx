@@ -7,6 +7,7 @@ import { SchemeCard } from '@/components/SchemeCard';
 import { UserProfile, SchemeCategory } from '@/lib/types';
 import { SEED_SCHEMES } from '@/lib/data/seed-schemes';
 import { rankSchemesForProfile } from '@/lib/matching';
+import { createClient } from '@/lib/supabase/client';
 import { 
   Sparkles, 
   Search, 
@@ -42,18 +43,46 @@ export default function DashboardPage() {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('soochai_profile');
-    if (stored) {
+    const loadProfile = async () => {
+      // Try Supabase first (logged-in user)
       try {
-        setProfile(JSON.parse(stored));
-      } catch {}
-    }
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: dbProfile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          if (dbProfile) {
+            const mapped: UserProfile = {
+              name: dbProfile.full_name || user.user_metadata?.name || 'Citizen',
+              age: dbProfile.age ?? 23,
+              gender: dbProfile.gender ?? 'all',
+              state: dbProfile.state ?? 'Maharashtra',
+              category: dbProfile.category ?? 'General',
+              occupation: dbProfile.occupation ?? 'student',
+              education: dbProfile.education_level ?? 'undergraduate',
+              annualIncome: dbProfile.annual_income ?? 200000,
+              isRural: dbProfile.is_rural ?? false,
+              hasDisability: dbProfile.has_disability ?? false,
+              interests: dbProfile.interests ?? [],
+            };
+            setProfile(mapped);
+            localStorage.setItem('soochai_profile', JSON.stringify(mapped));
+            return;
+          }
+        }
+      } catch {
+        // Supabase unavailable — fall through to localStorage
+      }
+      // Guest mode fallback
+      const stored = localStorage.getItem('soochai_profile');
+      if (stored) { try { setProfile(JSON.parse(stored)); } catch {} }
+    };
+    loadProfile();
     const saved = localStorage.getItem('soochai_saved');
-    if (saved) {
-      try {
-        setSavedSchemeIds(JSON.parse(saved));
-      } catch {}
-    }
+    if (saved) { try { setSavedSchemeIds(JSON.parse(saved)); } catch {} }
   }, []);
 
   const handleToggleBookmark = (schemeId: string) => {
@@ -135,6 +164,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Filter / Refresh Pills */}
+              <Link
+                href="/onboarding"
+                className="px-3.5 py-1.5 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors flex items-center gap-1.5 shadow-sm"
+              >
+                <span>Edit Profile</span>
+                <ArrowUpRight className="h-3 w-3" />
+              </Link>
               <Link
                 href="/onboarding"
                 className="px-3.5 py-1.5 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors flex items-center gap-1.5 shadow-sm"

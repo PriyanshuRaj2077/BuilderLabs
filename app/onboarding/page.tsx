@@ -79,27 +79,66 @@ export default function OnboardingPage() {
 
   // Real-time matched preview count
   const [matchedPreviewCount, setMatchedPreviewCount] = useState(0);
+  // Google account info
+  const [googleUser, setGoogleUser] = useState<{ email: string; avatar: string; name: string } | null>(null);
 
-  // Load existing profile if any
+  // Load existing profile — Supabase for logged-in, localStorage for guests
   useEffect(() => {
-    const stored = localStorage.getItem('soochai_profile');
-    if (stored) {
+    const loadExisting = async () => {
       try {
-        const p: UserProfile = JSON.parse(stored);
-        if (p.name) setName(p.name);
-        if (p.age) setAge(p.age);
-        if (p.gender) setGender(p.gender);
-        if (p.state) setState(p.state);
-        if (p.category) setCategory(p.category);
-        if (p.occupation) setOccupation(p.occupation);
-        if (p.education) setEducation(p.education);
-        if (p.annualIncome) setAnnualIncome(p.annualIncome);
-        if (p.isRural !== undefined) setIsRural(p.isRural);
-        if (p.hasDisability !== undefined) setHasDisability(p.hasDisability);
-        if (p.interests) setInterests(p.interests);
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          // Set Google account info
+          setGoogleUser({
+            email: user.email || '',
+            avatar: user.user_metadata?.avatar_url || user.user_metadata?.picture || '',
+            name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+          });
+          // Pre-fill name from Google
+          const googleName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+          if (googleName) setName(googleName);
+          // Load Supabase profile
+          const { data: dbProfile } = await supabase
+            .from('profiles').select('*').eq('id', user.id).single();
+          if (dbProfile) {
+            if (dbProfile.full_name) setName(dbProfile.full_name);
+            if (dbProfile.age) setAge(dbProfile.age);
+            if (dbProfile.gender) setGender(dbProfile.gender);
+            if (dbProfile.state) setState(dbProfile.state);
+            if (dbProfile.category) setCategory(dbProfile.category);
+            if (dbProfile.occupation) setOccupation(dbProfile.occupation);
+            if (dbProfile.education_level) setEducation(dbProfile.education_level);
+            if (dbProfile.annual_income) setAnnualIncome(dbProfile.annual_income);
+            if (dbProfile.is_rural !== undefined) setIsRural(dbProfile.is_rural);
+            if (dbProfile.has_disability !== undefined) setHasDisability(dbProfile.has_disability);
+            if (dbProfile.interests?.length) setInterests(dbProfile.interests);
+          }
+          return;
+        }
       } catch {}
-    }
+      // Guest fallback
+      const stored = localStorage.getItem('soochai_profile');
+      if (stored) {
+        try {
+          const p: UserProfile = JSON.parse(stored);
+          if (p.name) setName(p.name);
+          if (p.age) setAge(p.age);
+          if (p.gender) setGender(p.gender);
+          if (p.state) setState(p.state);
+          if (p.category) setCategory(p.category);
+          if (p.occupation) setOccupation(p.occupation);
+          if (p.education) setEducation(p.education);
+          if (p.annualIncome) setAnnualIncome(p.annualIncome);
+          if (p.isRural !== undefined) setIsRural(p.isRural);
+          if (p.hasDisability !== undefined) setHasDisability(p.hasDisability);
+          if (p.interests) setInterests(p.interests);
+        } catch {}
+      }
+    };
+    loadExisting();
   }, []);
+
 
   // Update live preview count on every input change
   useEffect(() => {
@@ -192,6 +231,35 @@ export default function OnboardingPage() {
       <Navbar currentProfile={{ name, age, gender, state, category, occupation, education, annualIncome, isRural, hasDisability, interests }} />
 
       <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:py-12 flex-1">
+
+        {/* Account Section — merged with Citizen Profile */}
+        {googleUser && (
+          <div className="mb-6 fin-canvas p-5 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {googleUser.avatar ? (
+                <img src={googleUser.avatar} alt={googleUser.name} className="w-10 h-10 rounded-full border-2 border-[var(--border-subtle)] object-cover" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-sm font-extrabold text-zinc-950">
+                  {googleUser.name.charAt(0)}
+                </div>
+              )}
+              <div>
+                <p className="text-sm font-bold text-[var(--text-primary)]">{googleUser.name}</p>
+                <p className="text-xs text-[var(--text-muted)]">{googleUser.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={async () => {
+                const supabase = createClient();
+                await supabase.auth.signOut();
+                router.push('/auth');
+              }}
+              className="text-xs font-semibold text-red-500 hover:text-red-400 border border-red-500/30 hover:border-red-400/50 px-3 py-1.5 rounded-full transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
         
         {/* Progress Tracker Bar */}
         <div className="mb-8">
