@@ -1,4 +1,4 @@
--- Supabase Initial Schema for SoochAI (PostgreSQL)
+-- Supabase Initial Schema for SuchakAI (PostgreSQL)
 -- Supports Row Level Security (RLS), GIN Full-Text Search, and Deterministic Eligibility Matching
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

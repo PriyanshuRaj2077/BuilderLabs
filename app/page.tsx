@@ -61,13 +61,13 @@ export default function LandingPage() {
           <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl max-w-4xl mx-auto leading-tight sm:leading-none">
             Don’t search through hundreds of schemes.{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400">
-              Let SoochAI find yours.
+              Let SuchakAI find yours.
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="mt-6 text-base sm:text-xl text-slate-400 max-w-2xl mx-auto font-normal">
-            Millions of eligible citizens miss out on scholarships, farm subsidies, business grants, and healthcare covers. SoochAI personalizes public schemes to your background, explains exactly why you qualify, and guides your application.
+            Millions of eligible citizens miss out on scholarships, farm subsidies, business grants, and healthcare covers. SuchakAI personalizes public schemes to your background, explains exactly why you qualify, and guides your application.
           </p>
 
           {/* Action CTAs */}
@@ -176,7 +176,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-8 text-xs text-slate-400">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© 2026 SoochAI Discovery Portal. Designed for Digital India empowerment.</p>
+          <p>© 2026 SuchakAI Discovery Portal. Designed for Digital India empowerment.</p>
           <div className="flex items-center gap-4 text-slate-400">
             <Link href="/dashboard" className="hover:text-slate-200">Dashboard</Link>
             <Link href="/search" className="hover:text-slate-200">All Schemes</Link>

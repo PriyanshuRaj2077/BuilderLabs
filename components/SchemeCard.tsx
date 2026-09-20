@@ -100,9 +100,14 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
                 Benefit: <strong className="text-white">{scheme.benefitAmount || scheme.benefits[0]}</strong>
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <Clock className="h-3.5 w-3.5 text-slate-400" />
-              <span>Deadline: {scheme.deadline || 'Ongoing'}</span>
+            <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-slate-400" />
+                <span>Deadline: {scheme.deadline || 'Ongoing'}</span>
+              </div>
+              <span className="text-[11px] text-emerald-400/90 font-medium">
+                Verified: {scheme.lastVerifiedDate}
+              </span>
             </div>
           </div>
         </div>

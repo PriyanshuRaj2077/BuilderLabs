@@ -51,7 +51,7 @@ export async function getGeminiSchemeExplanation(
         }
       });
 
-      const prompt = `You are SoochAI's Government Scheme Advisor for Indian citizens.
+      const prompt = `You are SuchakAI's Government Scheme Advisor for Indian citizens.
 Analyze this scheme against the citizen's profile and explain in clear, reassuring, and precise language why they qualify and what immediate steps they should take.
 
 Scheme:
@@ -144,7 +144,7 @@ Output ONLY a JSON object with this exact structure:
   ];
 
   const fallbackResult: AIExplanationResult = {
-    summary: `SoochAI matched this ${scheme.categoryTag} initiative to your profile because your status as a ${profile.occupation.replace('_', ' ')} in ${profile.state} satisfies the central guidelines.`,
+    summary: `SuchakAI matched this ${scheme.categoryTag} initiative to your profile because your status as a ${profile.occupation.replace('_', ' ')} in ${profile.state} satisfies the central guidelines.`,
     matchedPoints: matchedPoints.length > 0 ? matchedPoints : ['Matches standard demographic guidelines'],
     watchouts,
     nextSteps,

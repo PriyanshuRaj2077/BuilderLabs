@@ -31,6 +31,7 @@ export default function DashboardPage() {
   const [onlyEligible, setOnlyEligible] = useState(false);
   const [activeTab, setActiveTab] = useState<'matched' | 'all' | 'saved'>('matched');
   const [savedSchemeIds, setSavedSchemeIds] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState(false);
 
   // Load profile from localStorage on mount
   useEffect(() => {
@@ -284,17 +285,37 @@ export default function DashboardPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredResults.map((result) => (
-                  <SchemeCard
-                    key={result.scheme.id}
-                    result={result}
-                    userProfile={profile}
-                    onBookmarkToggle={handleToggleBookmark}
-                    isBookmarked={savedSchemeIds.includes(result.scheme.id)}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="flex items-center justify-between text-xs text-slate-400 pb-1">
+                  <span>
+                    Displaying <strong>{Math.min(showAll ? filteredResults.length : 8, filteredResults.length)}</strong> of <strong>{filteredResults.length}</strong> prioritized opportunities
+                  </span>
+                  <span className="text-emerald-400 font-medium">✓ Verified from official government gazettes</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(showAll ? filteredResults : filteredResults.slice(0, 8)).map((result) => (
+                    <SchemeCard
+                      key={result.scheme.id}
+                      result={result}
+                      userProfile={profile}
+                      onBookmarkToggle={handleToggleBookmark}
+                      isBookmarked={savedSchemeIds.includes(result.scheme.id)}
+                    />
+                  ))}
+                </div>
+
+                {filteredResults.length > 8 && (
+                  <div className="pt-4 text-center">
+                    <button
+                      onClick={() => setShowAll(!showAll)}
+                      className="rounded-xl border border-slate-700 bg-slate-900/90 px-6 py-2.5 text-xs font-bold text-slate-200 hover:border-blue-500/50 hover:bg-slate-800 hover:text-white transition-all shadow-md"
+                    >
+                      {showAll ? 'Show Top 8 Recommended Only' : `View All ${filteredResults.length} Relevant Schemes ↓`}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

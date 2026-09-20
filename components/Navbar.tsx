@@ -29,7 +29,7 @@ export function Navbar({ currentProfile, onSelectPersona }: NavbarProps) {
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xl font-black tracking-tight text-white">Sooch<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">AI</span></span>
+                <span className="text-xl font-black tracking-tight text-white">Suchak<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">AI</span></span>
                 <span className="rounded-full bg-blue-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-blue-400 border border-blue-500/20">Citizen Portal</span>
               </div>
               <p className="text-[10px] text-slate-400 hidden sm:block">Public Scheme Discovery Engine</p>

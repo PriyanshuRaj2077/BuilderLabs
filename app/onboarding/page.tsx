@@ -405,7 +405,7 @@ export default function OnboardingPage() {
                   <span>Your Opportunity Priorities</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Select which public benefits you want SoochAI to prioritize on your dashboard.
+                  Select which public benefits you want SuchakAI to prioritize on your dashboard.
                 </p>
               </div>
 
