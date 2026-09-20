@@ -34,48 +34,81 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
 
   return (
     <>
-      <div className="fin-card p-5 sm:p-6 transition-all duration-200 flex flex-col justify-between">
+      <div className="fin-card rounded-[28px] p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between group hover:shadow-[0_14px_34px_-6px_rgba(0,0,0,0.12)] hover:-translate-y-1 relative">
         <div>
-          {/* Top Tag & Match Score */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 mb-3.5">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--card-subtle)] px-3 py-1 text-[11px] font-medium text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+          {/* Top Tag & Match Score + Image 1 Top-Right Circular Action Arrow */}
+          <div className="flex items-center justify-between gap-2.5 mb-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--card-subtle)] px-3 py-1 text-[11px] font-semibold text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                 <Building2 className="h-3 w-3 text-[var(--text-muted)]" />
-                {scheme.level === 'central' ? 'Central Scheme' : `${scheme.state} State`}
+                <span>{scheme.level === 'central' ? 'Central' : scheme.state}</span>
               </span>
-              <span className="rounded-full bg-[var(--card-subtle)] px-3 py-1 text-[11px] font-medium text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+              <span className="rounded-full bg-[var(--card-subtle)] px-3 py-1 text-[11px] font-semibold text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                 {scheme.categoryTag}
               </span>
             </div>
 
-            {/* Match Score Badge (FinPoint Pill) */}
-            <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${getBadgeStyle(matchScore)}`}>
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>{matchScore}% Match</span>
+            <div className="flex items-center gap-2">
+              {/* Match Score Badge (FinPoint Yellow Pill) */}
+              <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${getBadgeStyle(matchScore)} shadow-sm`}>
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>{matchScore}% Match</span>
+              </div>
+
+              {/* Image 1 Signature Circular Quick-Action Arrow */}
+              <Link
+                href={`/scheme/${scheme.id}`}
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--card-subtle)] hover:bg-[var(--card-hover)] border border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-all shrink-0 shadow-sm"
+                title="View Scheme Details"
+              >
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           </div>
 
-          {/* Scheme Title */}
-          <Link href={`/scheme/${scheme.id}`} className="block group transition-colors">
-            <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-yellow)] tracking-tight leading-snug">
-              {scheme.name}
-            </h3>
-            {scheme.nameHindi && (
-              <p className="text-xs text-[var(--text-muted)] font-medium mt-0.5">{scheme.nameHindi}</p>
-            )}
-          </Link>
+          {/* Scheme Title & Ministry */}
+          <div className="mb-4">
+            <Link href={`/scheme/${scheme.id}`} className="block group/title">
+              <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] group-hover/title:text-[var(--accent-yellow)] tracking-tight leading-snug transition-colors">
+                {scheme.name}
+              </h3>
+            </Link>
+            <p className="text-xs text-[var(--text-muted)] font-medium mt-1">
+              {scheme.nameHindi ? `${scheme.nameHindi} • ` : ''}{scheme.ministry}
+            </p>
+          </div>
 
-          {/* Ministry */}
-          <p className="text-xs text-[var(--text-secondary)] mt-1 mb-3.5">
-            {scheme.ministry}
-          </p>
+          {/* Financial Benefit Hero Capsule (Image 1 Metric Display Style) */}
+          <div className="mb-3.5 rounded-[20px] bg-[var(--card-subtle)] p-3.5 border border-[var(--border-subtle)] flex items-center justify-between gap-3">
+            <div>
+              <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider block">
+                Direct Benefit Allocation
+              </span>
+              <div className="text-sm sm:text-base font-extrabold text-[var(--text-primary)] tracking-tight flex items-center gap-1.5 mt-0.5">
+                <IndianRupee className="h-4 w-4 text-[var(--accent-yellow)] shrink-0" />
+                <span>{scheme.benefitAmount || scheme.benefits[0]}</span>
+              </div>
+            </div>
 
-          {/* AI Personalized Recommendation Callout (FinPoint nested box) */}
-          <div className="mb-4 rounded-[16px] bg-[var(--card-subtle)] p-3.5 border border-[var(--border-subtle)]">
-            <div className="flex items-start gap-2 text-xs">
-              <CheckCircle2 className="h-4 w-4 text-[var(--accent-parrot)] shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold text-[var(--text-primary)]">Why it matches: </span>
+            <div className="text-right shrink-0">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--card-bg)] px-2.5 py-1 text-[10px] font-bold text-[var(--accent-parrot-text)] border border-[var(--border-subtle)] shadow-xs">
+                <Clock className="h-3 w-3 text-[var(--accent-parrot-text)]" />
+                <span>{scheme.deadline || 'Ongoing'}</span>
+              </span>
+              <span className="text-[10px] font-semibold text-[var(--text-muted)] block mt-1">
+                Verified: {scheme.lastVerifiedDate}
+              </span>
+            </div>
+          </div>
+
+          {/* AI Personalized Recommendation Callout (Image 1 Nested Capsule Style) */}
+          <div className="mb-4 rounded-[20px] bg-[var(--card-subtle)] p-3.5 border border-[var(--border-subtle)]">
+            <div className="flex items-start gap-2.5 text-xs">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-parrot-badge-bg)] border border-[var(--accent-parrot-badge-border)] text-[var(--accent-parrot)] shrink-0 mt-0.5">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="font-bold text-[var(--text-primary)] block mb-0.5">Why it matches your profile:</span>
                 <span className="text-[var(--text-secondary)] leading-relaxed">{whyItMatches}</span>
               </div>
             </div>
@@ -83,45 +116,26 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
             {cautionNotes && cautionNotes.length > 0 && (
               <div className="mt-2.5 flex items-start gap-2 text-xs text-amber-600 dark:text-amber-300/90 border-t border-[var(--border-subtle)] pt-2">
                 <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                <span>Note: {cautionNotes[0]}</span>
+                <span className="text-[11px] leading-snug">Note: {cautionNotes[0]}</span>
               </div>
             )}
           </div>
-
-          {/* Benefits summary */}
-          <div className="mb-4 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-primary)]">
-              <IndianRupee className="h-3.5 w-3.5 text-[var(--accent-yellow)]" />
-              <span>
-                Benefit: <strong className="text-[var(--text-primary)] font-bold">{scheme.benefitAmount || scheme.benefits[0]}</strong>
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-2 text-xs text-[var(--text-muted)]">
-              <div className="flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" />
-                <span>Deadline: {scheme.deadline || 'Ongoing'}</span>
-              </div>
-              <span className="text-[11px] font-semibold text-[var(--accent-parrot-text)]">
-                Verified: {scheme.lastVerifiedDate}
-              </span>
-            </div>
-          </div>
         </div>
 
-        {/* Footer Actions (FinPoint pill button style) */}
+        {/* Footer Actions (Image 1 Pill Button Style) */}
         <div className="pt-3.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={() => setShowAIModal(true)}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-yellow-text)] hover:opacity-80 transition-opacity"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-yellow-badge-bg)] text-[var(--accent-yellow-text)] border border-[var(--accent-yellow-badge-border)] px-3.5 py-1.5 text-xs font-bold hover:brightness-110 transition-all shadow-xs group/btn"
           >
-            <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0" />
-            <span className="text-[var(--accent-yellow-text)]">AI Reasoning Breakdown</span>
+            <Sparkles className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0 transition-transform group-hover/btn:rotate-12" />
+            <span>AI Reasoning Breakdown</span>
           </button>
 
           <div className="flex items-center gap-2">
             <Link
               href={`/scheme/${scheme.id}`}
-              className="inline-flex items-center gap-1 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] px-3.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-all shadow-sm"
+              className="inline-flex items-center gap-1 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] px-3.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-all shadow-xs"
             >
               <span>Details</span>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -131,7 +145,7 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
               href={scheme.officialUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full bg-[var(--text-primary)] px-3.5 py-1.5 text-xs font-bold text-[var(--background)] hover:opacity-90 transition-all shadow-sm"
+              className="inline-flex items-center gap-1 rounded-full bg-[var(--text-primary)] px-4 py-1.5 text-xs font-bold text-[var(--background)] hover:opacity-90 transition-all shadow-xs"
             >
               <span>Apply</span>
               <ArrowUpRight className="h-3.5 w-3.5" />

@@ -219,7 +219,7 @@ export default function DashboardPage() {
 
             {/* Right 7 Cols: The FinPoint Vibrant High-Contrast Orange Hero Card */}
             {topScheme && (
-              <div className="lg:col-span-7 fin-card-orange p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden text-white">
+              <div className="lg:col-span-7 fin-card-orange rounded-[28px] p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden text-white shadow-lg">
                 
                 {/* Background subtle curve watermark */}
                 <div className="absolute inset-0 opacity-15 pointer-events-none flex items-end">
@@ -460,7 +460,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {(showAll ? filteredSchemes : filteredSchemes.slice(0, 8)).map(result => (
               <SchemeCard
                 key={result.scheme.id}

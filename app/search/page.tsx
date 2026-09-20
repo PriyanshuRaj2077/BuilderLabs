@@ -108,42 +108,71 @@ export default function SearchPage() {
           {filtered.map(scheme => (
             <div
               key={scheme.id}
-              className="fin-card p-5 flex flex-col justify-between shadow-sm"
+              className="fin-card rounded-[28px] p-5 sm:p-6 flex flex-col justify-between group hover:shadow-[0_14px_34px_-6px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 relative"
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-2 text-xs">
-                  <span className="rounded-full bg-[var(--card-subtle)] px-2.5 py-0.5 text-[var(--text-secondary)] font-medium border border-[var(--border-subtle)]">
-                    {scheme.level === 'central' ? 'Central' : scheme.state}
-                  </span>
-                  <span className="text-[var(--accent-yellow-text)] font-semibold">{scheme.categoryTag}</span>
+                {/* Top Row: Category Pill & Image 1 Circular Action Arrow */}
+                <div className="flex items-center justify-between gap-2 mb-3.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-[var(--card-subtle)] px-3 py-1 text-[11px] font-semibold text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+                      {scheme.level === 'central' ? 'Central' : scheme.state}
+                    </span>
+                    <span className="text-[var(--accent-yellow-text)] text-[11px] font-bold">
+                      {scheme.categoryTag}
+                    </span>
+                  </div>
+
+                  <Link
+                    href={`/scheme/${scheme.id}`}
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--card-subtle)] hover:bg-[var(--card-hover)] border border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-all shrink-0 shadow-xs"
+                    title="View Details"
+                  >
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
 
-                <Link href={`/scheme/${scheme.id}`} className="block group">
-                  <h3 className="text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-yellow)] transition-colors">
-                    {scheme.name}
-                  </h3>
-                </Link>
+                {/* Title & Ministry */}
+                <div className="mb-3">
+                  <Link href={`/scheme/${scheme.id}`} className="block group/title">
+                    <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] group-hover/title:text-[var(--accent-yellow)] transition-colors leading-snug">
+                      {scheme.name}
+                    </h3>
+                  </Link>
+                  <p className="text-xs text-[var(--text-muted)] font-medium mt-0.5 line-clamp-1">
+                    {scheme.ministry}
+                  </p>
+                </div>
 
-                <p className="text-xs text-[var(--text-secondary)] mt-1 mb-3 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-[var(--text-secondary)] mb-3.5 line-clamp-2 leading-relaxed">
                   {scheme.description}
                 </p>
 
-                <div className="text-xs text-[var(--text-primary)] font-medium space-y-1.5 mb-4">
-                  <div className="flex items-center gap-1.5">
-                    <IndianRupee className="h-3.5 w-3.5 text-[var(--accent-yellow)]" />
-                    <span className="font-semibold">{scheme.benefitAmount || scheme.benefits[0]}</span>
+                {/* Financial Benefit Hero Capsule (Image 1 Style) */}
+                <div className="mb-4 rounded-[20px] bg-[var(--card-subtle)] p-3 border border-[var(--border-subtle)] flex items-center justify-between gap-2 text-xs">
+                  <div>
+                    <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider block">
+                      Benefit
+                    </span>
+                    <div className="font-extrabold text-[var(--text-primary)] flex items-center gap-1 mt-0.5 text-xs sm:text-sm">
+                      <IndianRupee className="h-3.5 w-3.5 text-[var(--accent-yellow)] shrink-0" />
+                      <span>{scheme.benefitAmount || scheme.benefits[0]}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[var(--text-muted)]">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>{scheme.deadline || 'Ongoing'}</span>
+
+                  <div className="text-right shrink-0">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--card-bg)] px-2 py-0.5 text-[10px] font-semibold text-[var(--accent-parrot-text)] border border-[var(--border-subtle)]">
+                      <Clock className="h-3 w-3" />
+                      <span>{scheme.deadline || 'Ongoing'}</span>
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between">
+              {/* Footer Actions */}
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
                 <Link
                   href={`/scheme/${scheme.id}`}
-                  className="text-xs font-semibold text-[var(--accent-yellow-text)] hover:opacity-80 flex items-center gap-1"
+                  className="inline-flex items-center gap-1 rounded-full bg-[var(--card-subtle)] hover:bg-[var(--card-hover)] border border-[var(--border-subtle)] px-3.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all shadow-xs"
                 >
                   <span>View Details</span>
                   <ChevronRight className="h-3.5 w-3.5" />
@@ -153,10 +182,10 @@ export default function SearchPage() {
                   href={scheme.officialUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full bg-[var(--card-subtle)] border border-[var(--border-subtle)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-highlight)] transition-colors inline-flex items-center gap-1"
+                  className="inline-flex items-center gap-1 rounded-full bg-[var(--text-primary)] px-4 py-1.5 text-xs font-bold text-[var(--background)] hover:opacity-90 transition-all shadow-xs"
                 >
-                  <span>Official</span>
-                  <ArrowUpRight className="h-3 w-3" />
+                  <span>Apply</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>
               </div>
             </div>
