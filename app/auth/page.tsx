@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { Navbar } from '@/components/Navbar';
 import { Sparkles, Mail, Lock, ArrowRight, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -17,8 +16,6 @@ export default function AuthPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const supabase = createClient();
-
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -26,67 +23,37 @@ export default function AuthPage() {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        // Sign Up
-        const { data: authData, error } = await supabase.auth.signUp({
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: isSignUp ? 'signup' : 'signin',
           email,
           password,
-          options: {
-            data: {
-              full_name: fullName,
-            },
-          },
-        });
+          fullName,
+        }),
+      });
 
-        if (error) {
-          setErrorMsg(error.message);
-        } else {
-          // Immediately create initial profile record in Supabase profiles table
-          if (authData?.user) {
-            try {
-              await supabase.from('profiles').upsert({
-                id: authData.user.id,
-                full_name: fullName || 'Citizen',
-                state: 'Maharashtra',
-                age: 24,
-                gender: 'female',
-                category: 'General',
-                occupation: 'job_seeker',
-                education_level: 'undergraduate',
-                annual_income: 250000,
-                is_rural: false,
-                has_disability: false,
-                interests: [],
-                is_onboarded: false,
-              });
-            } catch (e) {
-              console.warn('Initial profile create error:', e);
-            }
-          }
+      const data = await res.json();
 
-          setSuccessMsg('Account created successfully! Redirecting to setup your citizen profile...');
-          setTimeout(() => {
-            router.push('/onboarding');
-          }, 1200);
-        }
+      if (!res.ok || data.error) {
+        setErrorMsg(data.error || 'Authentication failed');
       } else {
-        // Sign In
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) {
-          setErrorMsg(error.message);
+        setSuccessMsg(data.message || 'Success!');
+        if (isSignUp) {
+          if (!data.needsEmailConfirm) {
+            setTimeout(() => {
+              router.push('/onboarding');
+            }, 1200);
+          }
         } else {
-          setSuccessMsg('Signed in successfully! Opening dashboard...');
           setTimeout(() => {
             router.push('/dashboard');
           }, 800);
         }
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Authentication failed';
+      const msg = err instanceof Error ? err.message : 'Authentication service error';
       setErrorMsg(msg);
     } finally {
       setLoading(false);
