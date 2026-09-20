@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Loader2, ExternalLink } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, ExternalLink, Copy, Check } from 'lucide-react';
 import { UserProfile } from '@/lib/types';
 
 export interface ChatMessage {
@@ -10,11 +10,19 @@ export interface ChatMessage {
   content: string;
   timestamp: number;
   source?: 'gemini' | 'rule_fallback';
+  schemes?: Array<{ name: string; matchScore: number }>;
 }
 
 interface ChatbotWidgetProps {
   currentProfile?: UserProfile | null;
 }
+
+const QUICK_SUGGESTIONS = [
+  { text: 'Which schemes match me?', icon: '🎯' },
+  { text: 'How do I apply?', icon: '📝' },
+  { text: 'What documents needed?', icon: '📋' },
+  { text: 'What are benefits?', icon: '💰' },
+];
 
 export function ChatbotWidget({ currentProfile }: ChatbotWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +30,7 @@ export function ChatbotWidget({ currentProfile }: ChatbotWidgetProps) {
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [sessionId] = useState(() => `chat_${Date.now()}_${Math.random().toString(36).slice(2)}`);
 
@@ -48,6 +57,22 @@ export function ChatbotWidget({ currentProfile }: ChatbotWidgetProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleCopyMessage = (content: string) => {
+    navigator.clipboard.writeText(content);
+    setCopiedId(`copied_${Date.now()}`);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleQuickSuggestion = (suggestion: string) => {
+    setInputValue(suggestion);
+    setTimeout(() => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.dispatchEvent(new Event('submit', { bubbles: true }));
+      }
+    }, 100);
+  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +114,7 @@ export function ChatbotWidget({ currentProfile }: ChatbotWidgetProps) {
         content: data.response,
         timestamp: Date.now(),
         source: data.source || 'gemini',
+        schemes: data.schemes || [],
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -144,14 +170,28 @@ export function ChatbotWidget({ currentProfile }: ChatbotWidgetProps) {
           {/* Messages Container */}
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[var(--background)]">
             {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] flex items-center justify-center mb-3">
+              <div className="h-full flex flex-col items-center justify-center text-center gap-4 px-2">
+                <div className="w-12 h-12 rounded-full bg-[var(--card-bg)] border border-[var(--border-subtle)] flex items-center justify-center">
                   <MessageCircle className="w-6 h-6 text-[var(--accent-yellow)]" />
                 </div>
-                <p className="text-sm font-semibold text-[var(--text-primary)]">Welcome to SuchakAI!</p>
-                <p className="text-xs text-[var(--text-secondary)] mt-2">
-                  Ask me anything about government schemes, eligibility, benefits, or application procedures.
-                </p>
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">Welcome to SuchakAI!</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">
+                    Ask me anything about government schemes, eligibility, benefits, or application procedures.
+                  </p>
+                </div>
+                <div className="w-full space-y-2">
+                  {QUICK_SUGGESTIONS.map((sugg, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleQuickSuggestion(sugg.text)}
+                      className="w-full text-left px-3 py-2 rounded-lg bg-[var(--card-bg)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] hover:border-[var(--accent-yellow)] hover:bg-[var(--card-hover)] transition-all"
+                    >
+                      <span className="mr-2">{sugg.icon}</span>
+                      {sugg.text}
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : (
               <>
@@ -161,13 +201,43 @@ export function ChatbotWidget({ currentProfile }: ChatbotWidgetProps) {
                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-xs px-4 py-2 rounded-lg text-sm ${
+                      className={`max-w-xs px-4 py-2 rounded-lg text-sm group ${
                         msg.role === 'user'
                           ? 'bg-[var(--accent-yellow)] text-zinc-950 font-medium'
                           : 'bg-[var(--card-bg)] border border-[var(--border-subtle)] text-[var(--text-primary)]'
                       }`}
                     >
                       <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+
+                      {/* Scheme suggestion pills */}
+                      {msg.schemes && msg.schemes.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-[var(--border-subtle)]">
+                          {msg.schemes.slice(0, 3).map((scheme, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[var(--accent-yellow)]/10 border border-[var(--accent-yellow)]/30 text-xs text-[var(--accent-yellow)]"
+                            >
+                              ✨ {scheme.matchScore}%
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Message actions */}
+                      <div className="flex items-center gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleCopyMessage(msg.content)}
+                          className="p-1 hover:bg-[var(--card-hover)] rounded text-xs"
+                          title="Copy message"
+                        >
+                          {copiedId === msg.id ? (
+                            <Check className="w-3 h-3 text-green-400" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </button>
+                      </div>
+
                       {msg.source === 'rule_fallback' && (
                         <p className="text-xs opacity-60 mt-1">📋 Rule-based response</p>
                       )}
