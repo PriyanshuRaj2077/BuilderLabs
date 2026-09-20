@@ -26,11 +26,9 @@ export function SchemeCard({ result, userProfile, onBookmarkToggle, isBookmarked
   const { scheme, matchScore, isEligible, whyItMatches, cautionNotes } = result;
   const [showAIModal, setShowAIModal] = useState(false);
 
-  // FinPoint score styling with high-contrast parrot green & orange badges
+  // FinPoint score styling with high-contrast radiant yellow badge
   const getBadgeStyle = (score: number) => {
-    if (score >= 85) return 'parrot-badge';
-    if (score >= 60) return 'bg-[#ff451a]/15 text-[#ff451a] border-[#ff451a]/30';
-    if (score >= 40) return 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30';
+    if (score >= 40) return 'yellow-badge';
     return 'bg-[var(--card-subtle)] text-[var(--text-muted)] border-[var(--border-subtle)]';
   };
 

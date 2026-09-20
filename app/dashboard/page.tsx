@@ -233,8 +233,9 @@ export default function DashboardPage() {
                     <span className="font-semibold uppercase tracking-wider text-white/95">
                       Top Ranked Opportunity (Priority #1)
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-black/30 font-bold text-white backdrop-blur-sm border border-white/20">
-                      {topScheme.matchScore}% Match Score
+                    <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full yellow-badge font-bold backdrop-blur-sm shadow-sm text-xs">
+                      <Sparkles className="h-3 w-3" />
+                      <span>{topScheme.matchScore}% Match Score</span>
                     </span>
                   </div>
 

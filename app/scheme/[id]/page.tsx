@@ -135,7 +135,7 @@ export default function SchemeDetailPage({ params }: { params: Promise<{ id: str
             {/* Match Score Gauge Card */}
             <div className="rounded-2xl bg-[var(--card-subtle)] p-5 border border-[var(--border-subtle)] text-center shrink-0 min-w-[200px] shadow-sm">
               <span className="text-xs font-semibold text-[var(--text-secondary)] block mb-1">Personal Match</span>
-              <div className="text-4xl font-black text-[#ff451a]">
+              <div className="text-4xl font-black text-[#facc15] dark:text-[#facc15] light:text-[#ca8a04]">
                 {matchResult.matchScore}%
               </div>
               <div className="mt-2 text-xs font-semibold text-[var(--accent-parrot-text)] flex items-center justify-center gap-1">

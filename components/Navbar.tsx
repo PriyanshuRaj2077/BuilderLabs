@@ -48,18 +48,19 @@ export function Navbar({ currentProfile }: NavbarProps) {
     <header className="w-full pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex h-14 items-center justify-between gap-4">
         
-        {/* Left: Brand Logo */}
+        {/* Left: Brand Logo (Unique Radiant Yellow Beacon) */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--card-bg)] border border-[var(--border-subtle)] shadow-sm group-hover:border-[#ff451a] transition-colors">
-              <div className="relative w-4 h-4 flex items-center justify-center">
-                {/* Parrot green accent diamond */}
-                <div className="w-2.5 h-2.5 bg-[#22e55e] rotate-45 rounded-[2px]" />
-                <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-[#ff451a] rounded-full" />
-              </div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-yellow-400/20 via-amber-400/10 to-transparent border border-yellow-500/40 shadow-sm group-hover:border-yellow-400 group-hover:shadow-[0_0_12px_rgba(250,204,21,0.3)] transition-all">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 text-[#facc15] fill-current" stroke="none">
+                {/* 4-point radiant beacon star */}
+                <path d="M12 2L14.6 9.4L22 12L14.6 14.6L12 22L9.4 14.6L2 12L9.4 9.4L12 2Z" />
+                {/* Central luminous core */}
+                <circle cx="12" cy="12" r="2.2" className="fill-white" />
+              </svg>
             </div>
             <span className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
-              Suchak<span className="text-[#ff451a]">AI</span>
+              Suchak<span className="text-[#facc15] dark:text-[#facc15] light:text-[#ca8a04]">AI</span>
             </span>
           </Link>
         </div>
