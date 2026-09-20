@@ -1,61 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
-import { Sparkles, Mail, Lock, ArrowRight, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
+import { Sparkles, AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
-export default function AuthPage() {
-  const router = useRouter();
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+function AuthPageInner() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  const searchParams = useSearchParams();
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (searchParams.get('error') === 'auth_failed') {
+      setErrorMsg('Google sign-in failed. Please try again.');
+    }
+  }, [searchParams]);
+
+  const handleGoogleSignIn = async () => {
     setErrorMsg('');
-    setSuccessMsg('');
     setLoading(true);
-
     try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: isSignUp ? 'signup' : 'signin',
-          email,
-          password,
-          fullName,
-        }),
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
       });
 
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        setErrorMsg(data.error || 'Authentication failed');
-      } else {
-        setSuccessMsg(data.message || 'Success!');
-        if (isSignUp) {
-          if (!data.needsEmailConfirm) {
-            setTimeout(() => {
-              router.push('/onboarding');
-            }, 1200);
-          }
-        } else {
-          setTimeout(() => {
-            router.push('/dashboard');
-          }, 800);
-        }
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
       }
+      // On success, browser is redirected to Google — no need to setLoading(false)
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Authentication service error';
       setErrorMsg(msg);
-    } finally {
       setLoading(false);
     }
   };
@@ -66,23 +52,21 @@ export default function AuthPage() {
 
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md fin-canvas p-8 shadow-xl">
-          
+
           {/* Header */}
           <div className="text-center mb-8">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-yellow-badge-bg)] border border-[var(--accent-yellow-badge-border)] text-[var(--accent-yellow)] mb-3">
               <Sparkles className="h-6 w-6" />
             </div>
             <h1 className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">
-              {isSignUp ? 'Create Citizen Account' : 'Welcome to SuchakAI'}
+              Welcome to SuchakAI
             </h1>
             <p className="text-xs text-[var(--text-secondary)] mt-1">
-              {isSignUp
-                ? 'Sign up to receive personalized government scheme discovery and tracking'
-                : 'Sign in to access your personalized scheme dashboard and saved benefits'}
+              Sign in to access your personalized scheme dashboard and saved benefits
             </p>
           </div>
 
-          {/* Feedback messages */}
+          {/* Error message */}
           {errorMsg && (
             <div className="mb-5 rounded-2xl bg-red-500/10 p-3.5 border border-red-500/30 flex items-start gap-2 text-xs text-red-600 dark:text-red-300">
               <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
@@ -90,111 +74,88 @@ export default function AuthPage() {
             </div>
           )}
 
-          {successMsg && (
-            <div className="mb-5 rounded-2xl parrot-badge p-3.5 flex items-start gap-2 text-xs">
-              <ShieldCheck className="h-4 w-4 text-[#22e55e] shrink-0 mt-0.5" />
-              <span>{successMsg}</span>
+          {/* Trust badges */}
+          <div className="mb-6 rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <ShieldCheck className="h-4 w-4 text-green-500 shrink-0" />
+              <span className="text-xs font-semibold text-[var(--text-primary)]">Secure Sign-In</span>
             </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleAuth} className="space-y-4">
-            {isSignUp && (
-              <div>
-                <label className="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Full Name</label>
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Ramesh Kumar"
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
-                />
-              </div>
-            )}
-
-            <div>
-              <label className="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="citizen@example.com"
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  minLength={6}
-                  className="w-full rounded-2xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-yellow)]"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-2 rounded-full bg-[var(--accent-yellow)] py-3 text-xs font-bold text-zinc-950 hover:brightness-105 shadow-lg shadow-yellow-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Processing...</span>
-                </>
-              ) : (
-                <>
-                  <span>{isSignUp ? 'Create Citizen Account' : 'Sign In to SuchakAI'}</span>
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Toggle between Sign In & Sign Up */}
-          <div className="mt-6 pt-6 border-t border-[var(--border-subtle)] text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setErrorMsg('');
-                setSuccessMsg('');
-              }}
-              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              {isSignUp ? (
-                <>Already have an account? <strong className="text-[var(--accent-yellow-text)] font-semibold">Sign In</strong></>
-              ) : (
-                <>New citizen? <strong className="text-[var(--accent-yellow-text)] font-semibold">Create an account</strong></>
-              )}
-            </button>
+            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+              We use Google OAuth — your password is never shared with SuchakAI. Your data is
+              protected and we only access your name and email.
+            </p>
           </div>
 
-          {/* Guest Mode Direct Access */}
-          <div className="mt-4 text-center">
+          {/* Google Sign-In Button */}
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            id="google-signin-btn"
+            className="w-full flex items-center justify-center gap-3 rounded-full border border-[var(--border-subtle)] bg-white dark:bg-zinc-900 py-3 px-4 text-sm font-semibold text-zinc-800 dark:text-zinc-100 hover:shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
+                <span>Redirecting to Google...</span>
+              </>
+            ) : (
+              <>
+                {/* Google SVG Logo */}
+                <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                <span>Continue with Google</span>
+              </>
+            )}
+          </button>
+
+          {/* Divider */}
+          <div className="my-5 flex items-center gap-3">
+            <div className="flex-1 h-px bg-[var(--border-subtle)]" />
+            <span className="text-[11px] text-[var(--text-muted)]">or</span>
+            <div className="flex-1 h-px bg-[var(--border-subtle)]" />
+          </div>
+
+          {/* Guest Mode */}
+          <div className="text-center">
             <Link
               href="/onboarding"
-              className="text-[11px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] underline"
+              className="text-[11px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] underline transition-colors"
             >
               Continue as Guest (No login required)
             </Link>
           </div>
 
+          {/* Footer note */}
+          <p className="mt-6 text-center text-[10px] text-[var(--text-muted)] leading-relaxed">
+            By continuing, you agree to SuchakAI&apos;s terms. Your information is used solely to
+            personalise government scheme recommendations.
+          </p>
         </div>
       </main>
     </div>
   );
 }
 
+export default function AuthPage() {
+  return (
+    <Suspense fallback={null}>
+      <AuthPageInner />
+    </Suspense>
+  );
+}
